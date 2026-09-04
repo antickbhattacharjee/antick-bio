@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section page-hero-section">
+    <div class="container">
+        <span class="section-subtitle">Get In Touch</span>
+        <h1 class="page-title">Connect with Antick Bhattacharjee</h1>
+        <p class="page-lead">
+            Reach out for corporate technical training sessions, hands-on programming workshops, or software and automation consulting.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="contact-page-layout">
+            <div class="contact-main-info">
+                <h2>Direct Channels &amp; Public Profiles</h2>
+                <p>
+                    I actively engage with engineering teams, educational institutions, and organizations seeking practical technical training. Connect with me through any of the verified channels below:
+                </p>
+
+                <div class="contact-grid">
+                    <!-- LinkedIn -->
+                    <a href="{{ social_links.linkedin }}" target="_blank" rel="noopener noreferrer" class="contact-item" aria-label="Antick Bhattacharjee on LinkedIn">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <rect x="2" y="9" width="4" height="12"></rect>
+                                <circle cx="4" cy="4" r="2"></circle>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <span class="contact-label">LinkedIn</span>
+                            <span class="contact-value">linkedin.com/in/antickbhattacharjee</span>
+                        </div>
+                    </a>
+
+                    <!-- GitHub -->
+                    <a href="{{ social_links.github }}" target="_blank" rel="noopener noreferrer" class="contact-item" aria-label="Antick Bhattacharjee on GitHub">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <span class="contact-label">GitHub</span>
+                            <span class="contact-value">github.com/antickbhattacharjee</span>
+                        </div>
+                    </a>
+
+                    <!-- Instagram -->
+                    <a href="{{ social_links.instagram }}" target="_blank" rel="noopener noreferrer" class="contact-item" aria-label="Antick Bhattacharjee on Instagram">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <span class="contact-label">Instagram</span>
+                            <span class="contact-value">instagram.com/antickbhattacharjee</span>
+                        </div>
+                    </a>
+
+                    <!-- Facebook -->
+                    <a href="{{ social_links.facebook }}" target="_blank" rel="noopener noreferrer" class="contact-item" aria-label="Antick Bhattacharjee on Facebook">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <span class="contact-label">Facebook</span>
+                            <span class="contact-value">facebook.com/imantick</span>
+                        </div>
+                    </a>
+
+                    <!-- Location -->
+                    <div class="contact-item non-interactive">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <span class="contact-label">Location</span>
+                            <span class="contact-value">{{ location }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-guidelines-box">
+                <h3>Inquiry Guidelines</h3>
+                <p>
+                    When reaching out regarding corporate training or workshop facilitation, please include details such as:
+                </p>
+                <ul>
+                    <li>Target audience and team size</li>
+                    <li>Core focus areas (Python, Workflow Automation, Modern Developer Tooling)</li>
+                    <li>Preferred format (in-person workshops, virtual sessions, multi-day masterclasses)</li>
+                    <li>Estimated timeframe</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

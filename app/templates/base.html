@@ -6,24 +6,31 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     
     <!-- Primary Meta Tags -->
-    <title>{% block title %}{{ site_title }}{% endblock %}</title>
-    <meta name="title" content="Antick Bhattacharjee | Trainer, Explorer & Builder">
-    <meta name="description" content="Personal website of Antick Bhattacharjee, corporate trainer, technology explorer and web automation enthusiast.">
+    <title>{% block title %}{{ page_title|default(site_title_default) }}{% endblock %}</title>
+    <meta name="title" content="{% block meta_title %}{{ page_title|default(site_title_default) }}{% endblock %}">
+    <meta name="description" content="{% block meta_desc %}{{ meta_description|default('Personal website of Antick Bhattacharjee, technology educator, Python developer and corporate trainer focused on practical learning, automation, software development and artificial intelligence.') }}{% endblock %}">
     <meta name="author" content="Antick Bhattacharjee">
     <meta name="robots" content="index, follow">
 
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ canonical_host }}{{ canonical_path|default('') }}">
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://antickbhattacharjee.qd.je/">
-    <meta property="og:title" content="Antick Bhattacharjee | Trainer, Explorer & Builder">
-    <meta property="og:description" content="Personal website of Antick Bhattacharjee, corporate trainer, technology explorer and web automation enthusiast.">
-    <meta property="og:image" content="{{ url_for('static', filename='images/profile.jpg') }}">
+    <meta property="og:site_name" content="Antick Bhattacharjee">
+    <meta property="og:url" content="{{ canonical_host }}{{ canonical_path|default('') }}">
+    <meta property="og:title" content="{% block og_title %}{{ page_title|default(site_title_default) }}{% endblock %}">
+    <meta property="og:description" content="{% block og_desc %}{{ meta_description|default('Personal website of Antick Bhattacharjee, technology educator, Python developer and corporate trainer.') }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ canonical_host }}/static/images/antick/profile/antick-bhattacharjee-profile.webp{% endblock %}">
+    <meta property="og:image:alt" content="{% block og_image_alt %}Portrait of Antick Bhattacharjee, technology educator, Python developer, and corporate trainer{% endblock %}">
 
-    <!-- Twitter Card -->
+    <!-- Twitter / X Cards -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://antickbhattacharjee.qd.je/">
-    <meta name="twitter:title" content="Antick Bhattacharjee | Trainer, Explorer & Builder">
-    <meta name="twitter:description" content="Personal website of Antick Bhattacharjee, corporate trainer, technology explorer and web automation enthusiast.">
+    <meta name="twitter:url" content="{{ canonical_host }}{{ canonical_path|default('') }}">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ page_title|default(site_title_default) }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_desc %}{{ meta_description|default('Personal website of Antick Bhattacharjee, technology educator, Python developer and corporate trainer.') }}{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ canonical_host }}/static/images/antick/profile/antick-bhattacharjee-profile.webp{% endblock %}">
+    <meta name="twitter:image:alt" content="Portrait of Antick Bhattacharjee">
 
     <!-- Typography (Google Fonts: Inter & Outfit) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,16 +40,69 @@
     <!-- Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
+    <!-- JSON-LD Structured Data: Person & ProfilePage Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "{{ canonical_host }}/#antick-bhattacharjee",
+          "name": "Antick Bhattacharjee",
+          "url": "{{ canonical_host }}/",
+          "image": "{{ canonical_host }}/static/images/antick/profile/antick-bhattacharjee-profile.webp",
+          "description": "Technology educator, Python developer, and corporate trainer specializing in hands-on learning, workflow automation, and practical software engineering.",
+          "jobTitle": [
+            "Technology Educator",
+            "Python Developer",
+            "Corporate Trainer"
+          ],
+          "knowsAbout": [
+            "Python Programming",
+            "Corporate Training",
+            "Software Development",
+            "Workflow Automation",
+            "Artificial Intelligence",
+            "Web Applications",
+            "Google Workspace Solutions"
+          ],
+          "sameAs": [
+            "{{ social_links.linkedin }}",
+            "{{ social_links.instagram }}",
+            "{{ social_links.facebook }}",
+            "{{ social_links.github }}"
+          ],
+          "address": {
+            "@type": "PostalAddress",
+            "addressRegion": "West Bengal",
+            "addressCountry": "IN"
+          }
+        },
+        {
+          "@type": "ProfilePage",
+          "@id": "{{ canonical_host }}{{ canonical_path|default('') }}#webpage",
+          "url": "{{ canonical_host }}{{ canonical_path|default('') }}",
+          "name": "{{ page_title|default(site_title_default) }}",
+          "description": "{{ meta_description|default('Personal website of Antick Bhattacharjee.') }}",
+          "mainEntity": {
+            "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+          }
+        }
+        {% block extra_schema %}{% endblock %}
+      ]
+    }
+    </script>
+    
     {% block head_extra %}{% endblock %}
 </head>
 <body>
-    <!-- Skip to main content for accessibility -->
+    <!-- Accessibility Skip Link -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Navigation Header -->
     <header class="site-header" id="site-header">
         <div class="container header-container">
-            <a href="#home" class="brand-logo" aria-label="Antick Bhattacharjee Homepage">
+            <a href="/" class="brand-logo" aria-label="Antick Bhattacharjee - Home">
                 <span class="brand-first">Antick</span>
                 <span class="brand-last">Bhattacharjee</span>
             </a>
@@ -55,29 +115,89 @@
 
             <nav class="primary-nav" id="primary-nav" aria-label="Primary Navigation">
                 <ul class="nav-list">
-                    <li class="nav-item"><a href="#home" class="nav-link active">Home</a></li>
-                    <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="#work" class="nav-link">Work</a></li>
-                    <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                    <li class="nav-item"><a href="/" class="nav-link {% if canonical_path == '/' %}active{% endif %}">Home</a></li>
+                    <li class="nav-item"><a href="/about" class="nav-link {% if canonical_path == '/about' %}active{% endif %}">About</a></li>
+                    <li class="nav-item"><a href="/training" class="nav-link {% if canonical_path == '/training' %}active{% endif %}">Training</a></li>
+                    <li class="nav-item"><a href="/projects" class="nav-link {% if canonical_path == '/projects' %}active{% endif %}">Projects</a></li>
+                    <li class="nav-item"><a href="/gallery" class="nav-link {% if canonical_path.startswith('/gallery') %}active{% endif %}">Gallery</a></li>
+                    <li class="nav-item"><a href="/insights" class="nav-link {% if canonical_path == '/insights' %}active{% endif %}">Insights</a></li>
+                    <li class="nav-item"><a href="/contact" class="nav-link {% if canonical_path == '/contact' %}active{% endif %}">Contact</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main Page Content -->
     <main id="main-content" class="site-main">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- Accessible Lightbox Modal for Gallery Images -->
+    <div class="lightbox-modal" id="lightbox-modal" role="dialog" aria-modal="true" aria-label="Image preview" aria-hidden="true" tabindex="-1">
+        <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+        <div class="lightbox-content" role="document">
+            <button class="lightbox-close" id="lightbox-close" aria-label="Close image viewer">&times;</button>
+            <div class="lightbox-media-box">
+                <img src="" alt="" class="lightbox-img" id="lightbox-img">
+            </div>
+            <div class="lightbox-info">
+                <h3 class="lightbox-title" id="lightbox-title"></h3>
+                <p class="lightbox-caption" id="lightbox-caption"></p>
+                <div class="lightbox-actions">
+                    <a href="#" class="lightbox-detail-link" id="lightbox-detail-link">View Image Details &rarr;</a>
+                </div>
+            </div>
+            <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous image">&#10094;</button>
+            <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next image">&#10095;</button>
+        </div>
+    </div>
+
+    <!-- Site Footer -->
     <footer class="site-footer">
         <div class="container footer-container">
-            <p class="copyright">
-                &copy; <span id="copyright-year">{{ current_year }}</span> Antick Bhattacharjee. All rights reserved.
-            </p>
-            <p class="footer-note">
-                Built with <span class="tech-badge">Flask</span> &amp; <span class="tech-badge">Python</span>
-            </p>
+            <div class="footer-brand-block">
+                <a href="/" class="brand-logo footer-logo" aria-label="Antick Bhattacharjee Homepage">
+                    <span class="brand-first">Antick</span>
+                    <span class="brand-last">Bhattacharjee</span>
+                </a>
+                <p class="footer-brand-line">{{ brand_line }}</p>
+                <p class="footer-descriptor">{{ primary_descriptor }}</p>
+            </div>
+
+            <div class="footer-social-block">
+                <span class="footer-block-heading">Connect With Antick</span>
+                <ul class="social-nav-list">
+                    <li>
+                        <a href="{{ social_links.linkedin }}" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Antick Bhattacharjee on LinkedIn">
+                            LinkedIn
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ social_links.github }}" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Antick Bhattacharjee on GitHub">
+                            GitHub
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ social_links.instagram }}" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Antick Bhattacharjee on Instagram">
+                            Instagram
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ social_links.facebook }}" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Antick Bhattacharjee on Facebook">
+                            Facebook
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-bottom-row">
+                <p class="copyright">
+                    &copy; <span id="copyright-year">{{ current_year }}</span> Antick Bhattacharjee. All rights reserved.
+                </p>
+                <p class="footer-note">
+                    Built with <span class="tech-badge">Flask</span> &amp; <span class="tech-badge">Python</span>
+                </p>
+            </div>
         </div>
     </footer>
 

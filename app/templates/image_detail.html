@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block extra_schema %}
+,
+{
+  "@type": "ImageObject",
+  "@id": "{{ canonical_host }}/gallery/{{ image.slug }}#image",
+  "name": "{{ image.title }}",
+  "caption": "{{ image.caption }}",
+  "description": "{{ image.description }}",
+  "contentUrl": "{{ canonical_host }}/static/{{ image.relative_path }}",
+  "url": "{{ canonical_host }}/gallery/{{ image.slug }}",
+  "width": "{{ image.width }} px",
+  "height": "{{ image.height }} px",
+  "author": {
+    "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+  },
+  "creator": {
+    "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+  },
+  "representativeOfPage": true
+}
+{% endblock %}
+
+{% block content %}
+<section class="section page-hero-section">
+    <div class="container">
+        <a href="/gallery" class="back-link">&larr; Back to Gallery</a>
+        <span class="section-subtitle">{{ image.category }}</span>
+        <h1 class="page-title">{{ image.title }}</h1>
+        <p class="page-lead">{{ image.caption }}</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="image-detail-grid">
+            <!-- Main Photo Display -->
+            <div class="image-detail-primary">
+                <div class="image-detail-wrapper">
+                    <img 
+                        src="{{ url_for('static', filename=image.relative_path) }}" 
+                        alt="{{ image.alt }}" 
+                        width="{{ image.width }}" 
+                        height="{{ image.height }}" 
+                        class="detail-large-img"
+                        fetchpriority="high"
+                        decoding="async"
+                    >
+                </div>
+                <div class="image-detail-caption-box">
+                    <p class="detail-caption-text">{{ image.caption }}</p>
+                </div>
+            </div>
+
+            <!-- Contextual Details Sidebar -->
+            <aside class="image-detail-sidebar">
+                <div class="detail-info-card">
+                    <h2>Photograph Context &amp; Details</h2>
+                    <dl class="detail-meta-list">
+                        <dt>Subject</dt>
+                        <dd>Antick Bhattacharjee</dd>
+
+                        <dt>Category</dt>
+                        <dd><span class="badge badge-accent">{{ image.category }}</span></dd>
+
+                        <dt>Context</dt>
+                        <dd>{{ image.context }}</dd>
+
+                        <dt>Year</dt>
+                        <dd>{{ image.date }}</dd>
+
+                        <dt>File Reference</dt>
+                        <dd><code>{{ image.filename }}</code></dd>
+                    </dl>
+                </div>
+
+                <div class="detail-description-card">
+                    <h3>Contextual Description</h3>
+                    <p>{{ image.description }}</p>
+                </div>
+
+                <div class="detail-connect-card">
+                    <h3>Interested in Technical Training?</h3>
+                    <p>Antick Bhattacharjee conducts tailored corporate training and workshops.</p>
+                    <a href="/contact" class="btn btn-primary btn-sm btn-full">Inquire for Sessions</a>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Related Gallery Photographs -->
+        {% if related_images %}
+        <div class="related-images-section">
+            <div class="section-header">
+                <span class="section-subtitle">More Photographs</span>
+                <h2 class="section-title">Related Gallery Images</h2>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="gallery-grid">
+                {% for rel in related_images %}
+                <figure class="gallery-card">
+                    <div class="gallery-image-wrapper">
+                        <img 
+                            src="{{ url_for('static', filename=rel.relative_path) }}" 
+                            alt="{{ rel.alt }}" 
+                            width="{{ rel.width }}" 
+                            height="{{ rel.height }}" 
+                            loading="lazy" 
+                            class="gallery-thumb"
+                        >
+                    </div>
+                    <figcaption class="gallery-caption-block">
+                        <h3 class="gallery-img-title">
+                            <a href="/gallery/{{ rel.slug }}">{{ rel.title }}</a>
+                        </h3>
+                        <p class="gallery-caption-text">{{ rel.caption }}</p>
+                    </figcaption>
+                </figure>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

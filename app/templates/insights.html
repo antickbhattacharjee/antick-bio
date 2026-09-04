@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section page-hero-section">
+    <div class="container">
+        <span class="section-subtitle">Thoughts &amp; Articles</span>
+        <h1 class="page-title">Insights &amp; Perspectives</h1>
+        <p class="page-lead">
+            Reflections from Antick Bhattacharjee on technology education, Python architecture, automation workflows, and continuous experimentation.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="insights-detailed-list">
+            <article class="insight-full-card">
+                <div class="insight-header">
+                    <span class="badge badge-accent">Pedagogy &amp; Education</span>
+                    <span class="insight-date">2026</span>
+                </div>
+                <h2>The Value of First-Principles Learning in Programming</h2>
+                <p class="insight-summary">
+                    In an era dominated by rapid framework turnover and high-level abstractions, the ability to decompose a problem into fundamental computing primitives remains the highest-leverage engineering skill.
+                </p>
+                <div class="insight-body">
+                    <p>
+                        When teaching beginners and experienced developers alike, I observe that difficulty with modern tools rarely stems from the framework itself—it stems from gaps in understanding memory, data flow, HTTP life-cycles, or execution stacks.
+                    </p>
+                    <p>
+                        By focusing curriculum around concrete problem-solving and building systems from scratch, learners build enduring mental models that transfer effortlessly across any language or runtime.
+                    </p>
+                </div>
+            </article>
+
+            <article class="insight-full-card">
+                <div class="insight-header">
+                    <span class="badge badge-accent">Workflow Automation</span>
+                    <span class="insight-date">2026</span>
+                </div>
+                <h2>Pragmatic Automation: Where to Start in Your Workflow</h2>
+                <p class="insight-summary">
+                    How teams can systematically identify repetitive operational friction and build resilient, automated scripts that save dozens of hours every month.
+                </p>
+                <div class="insight-body">
+                    <p>
+                        Not everything should be automated. The highest-return automation targets are processes that are high-frequency, rule-deterministic, and context-free (such as syncing spreadsheets, reformatting datasets, and dispatching notification triggers).
+                    </p>
+                    <p>
+                        Using standard tools like Python scripts and Google Workspace integrations, small teams can achieve enterprise-level velocity without introducing heavy third-party SaaS dependencies.
+                    </p>
+                </div>
+            </article>
+
+            <article class="insight-full-card">
+                <div class="insight-header">
+                    <span class="badge badge-accent">Software Craftsmanship</span>
+                    <span class="insight-date">2026</span>
+                </div>
+                <h2>Learn by Building. Build with Purpose.</h2>
+                <p class="insight-summary">
+                    Why the act of constructing real-world digital tools is the ultimate engine for continuous technical growth.
+                </p>
+                <div class="insight-body">
+                    <p>
+                        Passive consumption of tutorials creates the illusion of mastery. It is only when you face edge cases, debugging anomalies, and integration hurdles that genuine technical intuition forms.
+                    </p>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+{% endblock %}

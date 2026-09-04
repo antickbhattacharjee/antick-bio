@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Allow: /static/
+Allow: /static/images/
+Allow: /gallery
+
+Sitemap: {{ canonical_host }}/sitemap.xml

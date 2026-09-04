@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section page-hero-section">
+    <div class="container">
+        <span class="section-subtitle">Engineering &amp; Solutions</span>
+        <h1 class="page-title">Projects &amp; Technical Solutions</h1>
+        <p class="page-lead">
+            A selection of practical web applications, automation pipelines, and technical tools developed by Antick Bhattacharjee.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="projects-detailed-grid">
+            <article class="project-detailed-card">
+                <div class="project-meta-row">
+                    <span class="badge badge-accent">Web Architecture</span>
+                    <span class="project-year">2026</span>
+                </div>
+                <h2>Modular Web Platforms</h2>
+                <p>
+                    Lightweight, high-performance web systems developed with Flask, clean semantic HTML5, and vanilla CSS. 
+                    Built with application factory architectures to facilitate rapid expansion, SEO compliance, and accessible design.
+                </p>
+                <div class="project-tech-tags">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Flask</span>
+                    <span class="tech-tag">Jinja2</span>
+                    <span class="tech-tag">Semantic HTML5</span>
+                    <span class="tech-tag">Vanilla CSS</span>
+                </div>
+            </article>
+
+            <article class="project-detailed-card">
+                <div class="project-meta-row">
+                    <span class="badge badge-accent">Workflow Automation</span>
+                    <span class="project-year">2026</span>
+                </div>
+                <h2>Automated Data Sync &amp; Reporting Systems</h2>
+                <p>
+                    Bespoke automated pipelines connecting cloud spreadsheets, external REST APIs, and notification hooks. 
+                    These systems process and aggregate daily metrics, reducing hours of repetitive manual data entry.
+                </p>
+                <div class="project-tech-tags">
+                    <span class="tech-tag">Python Scripts</span>
+                    <span class="tech-tag">Google Apps Script</span>
+                    <span class="tech-tag">REST APIs</span>
+                    <span class="tech-tag">Data Transformation</span>
+                </div>
+            </article>
+
+            <article class="project-detailed-card">
+                <div class="project-meta-row">
+                    <span class="badge badge-accent">Education &amp; Tooling</span>
+                    <span class="project-year">2026</span>
+                </div>
+                <h2>Interactive Code Sandboxes &amp; Labs</h2>
+                <p>
+                    Modular coding environments and structured repositories created to guide learners through hands-on 
+                    programming concepts, API consumption, and unit testing scenarios.
+                </p>
+                <div class="project-tech-tags">
+                    <span class="tech-tag">Interactive Learning</span>
+                    <span class="tech-tag">Test Suites</span>
+                    <span class="tech-tag">Clean Code Labs</span>
+                </div>
+            </article>
+        </div>
+
+        {% if project_images %}
+        <div class="projects-visuals-block">
+            <div class="section-header">
+                <span class="section-subtitle">Visual Context</span>
+                <h2 class="section-title">Development &amp; Engineering Photos</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="gallery-grid">
+                {% for img in project_images %}
+                <figure class="gallery-card" data-slug="{{ img.slug }}" data-full-src="{{ url_for('static', filename=img.relative_path) }}" data-title="{{ img.title }}" data-caption="{{ img.caption }}" data-detail-url="/gallery/{{ img.slug }}">
+                    <div class="gallery-image-wrapper">
+                        <img 
+                            src="{{ url_for('static', filename=img.relative_path) }}" 
+                            alt="{{ img.alt }}" 
+                            width="{{ img.width }}" 
+                            height="{{ img.height }}" 
+                            loading="lazy" 
+                            class="gallery-thumb"
+                        >
+                    </div>
+                    <figcaption class="gallery-caption-block">
+                        <h3 class="gallery-img-title">
+                            <a href="/gallery/{{ img.slug }}">{{ img.title }}</a>
+                        </h3>
+                        <p class="gallery-caption-text">{{ img.caption }}</p>
+                    </figcaption>
+                </figure>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="cta-banner">
+            <h2>Have a Project or Automation Need?</h2>
+            <p>Let's discuss how we can build clean, reliable software solutions tailored to your requirements.</p>
+            <a href="/contact" class="btn btn-primary">Start a Conversation</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

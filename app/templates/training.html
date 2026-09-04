@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section page-hero-section">
+    <div class="container">
+        <span class="section-subtitle">Programs &amp; Offerings</span>
+        <h1 class="page-title">Corporate Training &amp; Workshops</h1>
+        <p class="page-lead">
+            Empowering organizations and technical teams with hands-on training in Python, automation, and modern software development.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="training-overview-grid">
+            <div class="training-core-card">
+                <div class="card-kicker">Interactive Program</div>
+                <h2>Python for Developers &amp; Engineers</h2>
+                <p>
+                    A comprehensive workshop transitioning teams from foundational syntax to object-oriented architecture, 
+                    API integration, automated testing, and web development.
+                </p>
+                <ul class="training-syllabus-list">
+                    <li>Core computing concepts and idiomatic Python</li>
+                    <li>Modular code architecture and package design</li>
+                    <li>Working with REST APIs, JSON, and external services</li>
+                    <li>Unit testing, debugging methodologies, and clean code</li>
+                </ul>
+            </div>
+
+            <div class="training-core-card">
+                <div class="card-kicker">Automation Masterclass</div>
+                <h2>Workflow Automation &amp; System Integration</h2>
+                <p>
+                    Teaching teams how to identify repetitive manual overhead and build dependable, automated scripts 
+                    and Google Workspace integrations.
+                </p>
+                <ul class="training-syllabus-list">
+                    <li>Identifying high-value automation opportunities</li>
+                    <li>Google Apps Script, Sheets, Docs, and Gmail workflows</li>
+                    <li>Scheduled jobs, data transformation, and reporting bots</li>
+                    <li>Error handling, monitoring, and robust execution</li>
+                </ul>
+            </div>
+
+            <div class="training-core-card">
+                <div class="card-kicker">Applied Technology</div>
+                <h2>AI-Assisted Development &amp; Modern Tooling</h2>
+                <p>
+                    Guiding engineering teams on how to effectively integrate modern AI coding tools and LLM APIs 
+                    into daily engineering workflows responsibly and productively.
+                </p>
+                <ul class="training-syllabus-list">
+                    <li>Effective prompt engineering for code architecture</li>
+                    <li>API prototyping with modern language model endpoints</li>
+                    <li>Code review, security considerations, and quality checks</li>
+                </ul>
+            </div>
+        </div>
+
+        {% if training_images %}
+        <div class="training-visuals-block">
+            <div class="section-header">
+                <span class="section-subtitle">In the Field</span>
+                <h2 class="section-title">Photographs from Training Sessions</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="gallery-grid">
+                {% for img in training_images %}
+                <figure class="gallery-card" data-slug="{{ img.slug }}" data-full-src="{{ url_for('static', filename=img.relative_path) }}" data-title="{{ img.title }}" data-caption="{{ img.caption }}" data-detail-url="/gallery/{{ img.slug }}">
+                    <div class="gallery-image-wrapper">
+                        <img 
+                            src="{{ url_for('static', filename=img.relative_path) }}" 
+                            alt="{{ img.alt }}" 
+                            width="{{ img.width }}" 
+                            height="{{ img.height }}" 
+                            loading="lazy" 
+                            class="gallery-thumb"
+                        >
+                        <div class="gallery-overlay">
+                            <button type="button" class="gallery-zoom-btn" aria-label="Preview {{ img.title }}">
+                                <span>Preview</span>
+                            </button>
+                        </div>
+                    </div>
+                    <figcaption class="gallery-caption-block">
+                        <h3 class="gallery-img-title">
+                            <a href="/gallery/{{ img.slug }}">{{ img.title }}</a>
+                        </h3>
+                        <p class="gallery-caption-text">{{ img.caption }}</p>
+                    </figcaption>
+                </figure>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="cta-banner">
+            <h2>Schedule a Corporate Training Session</h2>
+            <p>Looking to upskill your team or conduct an interactive technical workshop?</p>
+            <a href="/contact" class="btn btn-primary">Inquire About Training</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

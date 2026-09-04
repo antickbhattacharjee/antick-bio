@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section page-hero-section">
+    <div class="container">
+        <span class="section-subtitle">Biography &amp; Philosophy</span>
+        <h1 class="page-title">About Antick Bhattacharjee</h1>
+        <p class="page-lead">
+            Technology educator, Python developer, and corporate trainer committed to practical, project-based engineering.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container page-content-grid">
+        <div class="page-main-column">
+            <div class="content-block">
+                <h2>Background &amp; Pedagogy</h2>
+                <p>
+                    I work at the intersection of technical training, software engineering, and workflow automation. 
+                    Throughout my work with learners, developers, and corporate teams, my core guiding principle has remained 
+                    simple: <strong>Learn by building. Build with purpose.</strong>
+                </p>
+                <p>
+                    Rather than memorizing abstract concepts or chasing fleeting toolchains, I encourage understanding 
+                    computing systems from first principles. By deconstructing problems, designing architectures, and writing 
+                    working code, learners develop the intuition required to solve real-world problems independently.
+                </p>
+            </div>
+
+            <div class="content-block">
+                <h2>Technical Focus Areas</h2>
+                <ul class="styled-feature-list">
+                    <li>
+                        <strong>Python &amp; Modern Programming:</strong> Teaching and developing backend services, web applications, and algorithmic problem-solving.
+                    </li>
+                    <li>
+                        <strong>Corporate Training &amp; Workshops:</strong> Delivering structured curriculum designed to upskill teams in modern tooling and engineering practices.
+                    </li>
+                    <li>
+                        <strong>Workflow &amp; System Automation:</strong> Creating robust scripts, API integrations, and Google Workspace automated tooling.
+                    </li>
+                    <li>
+                        <strong>AI Experimentation:</strong> Exploring modern language models, API integrations, and AI-assisted workflows to accelerate development cycles.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-block">
+                <h2>Teaching Philosophy</h2>
+                <p>
+                    True technical confidence comes from demystifying the black boxes. In every workshop and training session, 
+                    we emphasize live debugging, incremental architecture, and writing clean, readable, and maintainable software.
+                </p>
+            </div>
+        </div>
+
+        <aside class="page-sidebar">
+            <div class="sidebar-card">
+                <div class="sidebar-image-box">
+                    <img 
+                        src="{{ url_for('static', filename=primary_image.relative_path) }}" 
+                        alt="{{ primary_image.alt }}" 
+                        width="800" 
+                        height="800" 
+                        class="sidebar-profile-img"
+                    >
+                </div>
+                <div class="sidebar-info">
+                    <h3 class="sidebar-name">Antick Bhattacharjee</h3>
+                    <p class="sidebar-role">Technology Educator &bull; Python Developer</p>
+                    <p class="sidebar-location">West Bengal, India</p>
+                    <a href="/contact" class="btn btn-primary btn-sm btn-full">Get In Touch</a>
+                </div>
+            </div>
+
+            <div class="sidebar-links-card">
+                <h4>Verified Public Profiles</h4>
+                <ul class="sidebar-social-list">
+                    <li><a href="{{ social_links.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a></li>
+                    <li><a href="{{ social_links.github }}" target="_blank" rel="noopener noreferrer">GitHub &rarr;</a></li>
+                    <li><a href="{{ social_links.instagram }}" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></li>
+                    <li><a href="{{ social_links.facebook }}" target="_blank" rel="noopener noreferrer">Facebook &rarr;</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}
