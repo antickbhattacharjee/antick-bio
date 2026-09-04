@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- Primary Meta Tags -->
+    <title>{% block title %}{{ site_title }}{% endblock %}</title>
+    <meta name="title" content="Antick Bhattacharjee | Trainer, Explorer & Builder">
+    <meta name="description" content="Personal website of Antick Bhattacharjee, corporate trainer, technology explorer and web automation enthusiast.">
+    <meta name="author" content="Antick Bhattacharjee">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://antickbhattacharjee.qd.je/">
+    <meta property="og:title" content="Antick Bhattacharjee | Trainer, Explorer & Builder">
+    <meta property="og:description" content="Personal website of Antick Bhattacharjee, corporate trainer, technology explorer and web automation enthusiast.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/profile.jpg') }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://antickbhattacharjee.qd.je/">
+    <meta name="twitter:title" content="Antick Bhattacharjee | Trainer, Explorer & Builder">
+    <meta name="twitter:description" content="Personal website of Antick Bhattacharjee, corporate trainer, technology explorer and web automation enthusiast.">
+
+    <!-- Typography (Google Fonts: Inter & Outfit) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Navigation Header -->
+    <header class="site-header" id="site-header">
+        <div class="container header-container">
+            <a href="#home" class="brand-logo" aria-label="Antick Bhattacharjee Homepage">
+                <span class="brand-first">Antick</span>
+                <span class="brand-last">Bhattacharjee</span>
+            </a>
+
+            <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation menu">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+
+            <nav class="primary-nav" id="primary-nav" aria-label="Primary Navigation">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#home" class="nav-link active">Home</a></li>
+                    <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="#work" class="nav-link">Work</a></li>
+                    <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <p class="copyright">
+                &copy; <span id="copyright-year">{{ current_year }}</span> Antick Bhattacharjee. All rights reserved.
+            </p>
+            <p class="footer-note">
+                Built with <span class="tech-badge">Flask</span> &amp; <span class="tech-badge">Python</span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    {% block scripts_extra %}{% endblock %}
+</body>
+</html>
