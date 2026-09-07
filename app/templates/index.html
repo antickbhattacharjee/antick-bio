@@ -33,7 +33,6 @@
                         id="hero-portrait-img"
                         fetchpriority="high"
                         decoding="async"
-                        onerror="this.src='/static/images/profile.jpg'"
                     >
                 </div>
                 <div class="hero-badge">
@@ -196,7 +195,8 @@
     </div>
 </section>
 
-<!-- 6. Homepage Gallery Preview -->
+<!-- 6. Homepage Gallery Preview (shown only when published content exists) -->
+{% if featured_photos or featured_videos or featured_literature %}
 <section class="section gallery-section" id="gallery-preview">
     <div class="container">
         <div class="section-header">
@@ -225,7 +225,6 @@
                             loading="lazy" 
                             decoding="async" 
                             class="gallery-card-img"
-                            onerror="this.src='/static/images/profile.jpg'"
                         >
                     </a>
                     <span class="card-type-badge badge-photo">Photo</span>
@@ -261,6 +260,7 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 <!-- 7. Contact Section -->
 <section class="section contact-section" id="contact">

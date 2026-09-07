@@ -164,22 +164,37 @@ class CMSTestCase(unittest.TestCase):
         self.assertNotIn("onrender.com", content)
 
     # -------------------------------------------------------------------------
-    # Public Detail Pages
+    # Clean State & Dynamic Detail Pages
     # -------------------------------------------------------------------------
 
-    def test_photo_and_literature_detail_pages(self):
-        """Verify detail pages render with structured data."""
-        # Test photo detail with fallback slug
-        resp_photo = self.client.get("/gallery/photo/antick-bhattacharjee-profile")
-        self.assertEqual(resp_photo.status_code, 200)
-        self.assertIn(b"Portrait of Antick Bhattacharjee", resp_photo.data)
-        self.assertIn(b"ImageObject", resp_photo.data)
+    def test_clean_state_gallery_and_literature_empty_states(self):
+        """Verify gallery and admin empty state UI with 0 content items."""
+        resp_gallery = self.client.get("/gallery")
+        self.assertEqual(resp_gallery.status_code, 200)
+        self.assertIn(b"New work will be added here soon.", resp_gallery.data)
 
-        # Test literature detail
-        resp_lit = self.client.get("/literature/first-principles-in-programming")
-        if resp_lit.status_code == 200:
-            self.assertIn(b"First-Principles", resp_lit.data)
-            self.assertIn(b"CreativeWork", resp_lit.data)
+        # Nonexistent content items return 404 cleanly without 500 errors
+        resp_photo = self.client.get("/gallery/photo/non-existent-photo")
+        self.assertEqual(resp_photo.status_code, 404)
+
+        resp_lit = self.client.get("/literature/non-existent-literature")
+        self.assertEqual(resp_lit.status_code, 404)
+
+    def test_admin_empty_states(self):
+        """Verify admin lists display clean empty state messages and upload buttons."""
+        self.login_admin()
+
+        resp_p = self.client.get("/admin/photos")
+        self.assertEqual(resp_p.status_code, 200)
+        self.assertIn(b"No photos uploaded yet.", resp_p.data)
+
+        resp_v = self.client.get("/admin/videos")
+        self.assertEqual(resp_v.status_code, 200)
+        self.assertIn(b"No videos uploaded yet.", resp_v.data)
+
+        resp_l = self.client.get("/admin/literature")
+        self.assertEqual(resp_l.status_code, 200)
+        self.assertIn(b"No literature published yet.", resp_l.data)
 
     # -------------------------------------------------------------------------
     # Admin Routes & Bug 2 Regression Tests

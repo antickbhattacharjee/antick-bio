@@ -39,8 +39,8 @@ def create_app(test_config=None):
             primary_image_url = f"/media/photo/{primary_photo.get('filename')}"
             primary_image_alt = primary_photo.get("alt_text") or "Portrait of Antick Bhattacharjee"
         else:
-            primary_image_url = "/static/images/profile.jpg"
-            primary_image_alt = "Portrait of Antick Bhattacharjee"
+            primary_image_url = "/static/images/avatar_neutral.svg"
+            primary_image_alt = "Antick Bhattacharjee avatar"
 
         canonical_host = app.config.get("CANONICAL_HOST", "https://www.antickbhattacharjee.qd.je")
         

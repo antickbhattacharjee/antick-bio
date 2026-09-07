@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="avatarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="24" fill="url(#avatarGrad)" stroke="#334155" stroke-width="2"/>
+  <text x="100" y="118" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="64" font-weight="700" fill="#38bdf8" text-anchor="middle" letter-spacing="-1">AB</text>
+</svg>

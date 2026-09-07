@@ -70,8 +70,8 @@
     </div>
     {% else %}
     <div class="admin-empty-card">
-        <p>No photos have been uploaded yet.</p>
-        <a href="{{ url_for('admin.photo_new') }}" class="admin-btn admin-btn-primary">Upload First Photo</a>
+        <p>No photos uploaded yet.</p>
+        <a href="{{ url_for('admin.photo_new') }}" class="admin-btn admin-btn-primary">+ Upload New Photo</a>
     </div>
     {% endif %}
 </div>

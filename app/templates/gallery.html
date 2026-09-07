@@ -49,6 +49,7 @@
 
 <section class="section gallery-grid-section">
     <div class="container">
+        {% if photos or videos or literature %}
         <div class="gallery-masonry-grid">
             <!-- 1. Photos -->
             {% if active_filter in ('all', 'photos') %}
@@ -57,13 +58,12 @@
                     <div class="gallery-card-media">
                         <a href="{{ url_for('main.photo_detail', slug=photo.slug) }}" class="gallery-media-link" aria-label="View photo: {{ photo.title }}">
                             <img src="{{ url_for('main.serve_photo', filename=photo.filename) }}"
-                                 alt="{{ photo.alt_text|default('Portrait of Antick Bhattacharjee') }}"
+                                 alt="{{ photo.alt_text|default('Photograph by Antick Bhattacharjee') }}"
                                  width="{{ photo.width|default(800) }}"
                                  height="{{ photo.height|default(800) }}"
                                  loading="lazy"
                                  decoding="async"
-                                 class="gallery-card-img"
-                                 onerror="this.src='/static/images/profile.jpg'">
+                                 class="gallery-card-img">
                         </a>
                         <span class="card-type-badge badge-photo">Photo</span>
                     </div>
@@ -92,7 +92,7 @@
                         <a href="{{ url_for('main.video_detail', slug=video.slug) }}" class="gallery-media-link" aria-label="Watch video: {{ video.title }}">
                             <div class="video-card-thumb-wrapper">
                                 <div class="video-play-icon">&#9658;</div>
-                                <img src="/static/images/profile.jpg" alt="{{ video.title }}" class="gallery-card-img" loading="lazy" decoding="async">
+                                <div class="video-card-placeholder-bg"></div>
                             </div>
                         </a>
                         <span class="card-type-badge badge-video">Video</span>
@@ -136,11 +136,23 @@
                 {% endfor %}
             {% endif %}
         </div>
-
-        {% if not photos and not videos and not literature %}
-        <div class="text-center empty-gallery-state">
-            <p>No published entries found matching your criteria.</p>
-            <a href="{{ url_for('main.gallery') }}" class="btn btn-secondary">View All Works</a>
+        {% else %}
+        <div class="empty-state-card text-center" style="padding: 4rem 2rem; background: var(--color-surface, #1e293b); border: 1px solid var(--color-border, #334155); border-radius: 1rem; max-width: 600px; margin: 2rem auto;">
+            <div class="empty-state-icon" style="margin-bottom: 1.5rem; color: var(--color-accent, #38bdf8);">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+            </div>
+            {% if query %}
+                <h2 style="font-size: 1.35rem; margin-bottom: 0.75rem; color: var(--color-text-primary, #f8fafc);">No Results Found</h2>
+                <p style="color: var(--color-text-muted, #94a3b8); margin-bottom: 1.5rem;">No published entries matched your search for "{{ query }}".</p>
+                <a href="{{ url_for('main.gallery') }}" class="btn btn-secondary">View All Works</a>
+            {% else %}
+                <h2 style="font-size: 1.35rem; margin-bottom: 0.75rem; color: var(--color-text-primary, #f8fafc);">New work will be added here soon.</h2>
+                <p style="color: var(--color-text-muted, #94a3b8); margin-bottom: 0;">Check back shortly for upcoming photographs, recorded presentations, and written publications.</p>
+            {% endif %}
         </div>
         {% endif %}
     </div>
