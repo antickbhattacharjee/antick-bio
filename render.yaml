@@ -7,6 +7,8 @@ services:
     plan: free
     autoDeploy: true
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
       - key: FLASK_APP
         value: run.py
       - key: FLASK_ENV
