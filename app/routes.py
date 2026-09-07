@@ -317,6 +317,9 @@ def photo_detail(slug):
                 photo = p
                 break
         if not photo:
+            from app.gallery_data import get_image_by_slug
+            photo = get_image_by_slug(slug)
+        if not photo:
             abort(404)
 
     all_photos = content_store.get_photos(published_only=True)
@@ -577,25 +580,29 @@ def health_check():
     })
 
 
+@main_bp.route("/favicon.ico")
+def favicon():
+    """Serve favicon.ico to prevent unnecessary 404 errors."""
+    favicon_path = os.path.join(current_app.root_path, "static", "images", "favicon.ico")
+    if os.path.exists(favicon_path):
+        return send_file(favicon_path, mimetype="image/x-icon")
+    profile_path = os.path.join(current_app.root_path, "static", "images", "profile.jpg")
+    if os.path.exists(profile_path):
+        return send_file(profile_path, mimetype="image/jpeg")
+    return Response(status=204)
+
+
 # -----------------------------------------------------------------------------
 # Error Handlers
 # -----------------------------------------------------------------------------
 
 @main_bp.app_errorhandler(404)
 def handle_404(e):
-    return render_template(
-        "base.html",
-        page_title="Page Not Found | Antick Bhattacharjee",
-        meta_description="The requested page could not be found.",
-        content="<section class='section'><div class='container' style='text-align:center; padding: 4rem 1rem;'><h1>404 — Page Not Found</h1><p style='margin:1.5rem 0; color: var(--color-text-secondary);'>The page or creative work you are looking for has moved or does not exist.</p><a href='/' class='btn btn-primary'>Return Home</a></div></section>",
-    ), 404
+    """Clean, robust 404 error page."""
+    return render_template("404.html"), 404
 
 
 @main_bp.app_errorhandler(500)
 def handle_500(e):
-    return render_template(
-        "base.html",
-        page_title="Server Error | Antick Bhattacharjee",
-        meta_description="An unexpected server error occurred.",
-        content="<section class='section'><div class='container' style='text-align:center; padding: 4rem 1rem;'><h1>Service Notice</h1><p style='margin:1.5rem 0; color: var(--color-text-secondary);'>We encountered a momentary issue retrieving content. Please check back shortly.</p><a href='/' class='btn btn-primary'>Return Home</a></div></section>",
-    ), 500
+    """Clean, robust 500 error page."""
+    return render_template("500.html"), 500

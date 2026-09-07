@@ -37,6 +37,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
     <!-- Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
@@ -47,9 +50,9 @@
       "@graph": [
         {
           "@type": "Person",
-          "@id": "{{ canonical_host }}/#antick-bhattacharjee",
+          "@id": "{{ canonical_host|default('https://www.antickbhattacharjee.qd.je') }}/#antick-bhattacharjee",
           "name": "Antick Bhattacharjee",
-          "url": "{{ canonical_host }}/",
+          "url": "{{ canonical_host|default('https://www.antickbhattacharjee.qd.je') }}/",
           "image": "{{ primary_profile_image_url }}",
           "description": "Technology educator, Python developer, and corporate trainer specializing in hands-on learning, workflow automation, and practical software engineering.",
           "jobTitle": [
@@ -80,12 +83,12 @@
         },
         {
           "@type": "ProfilePage",
-          "@id": "{{ canonical_host }}{{ canonical_path|default('') }}#webpage",
-          "url": "{{ canonical_host }}{{ canonical_path|default('') }}",
+          "@id": "{{ canonical_host|default('https://www.antickbhattacharjee.qd.je') }}{{ canonical_path|default('') }}#webpage",
+          "url": "{{ canonical_host|default('https://www.antickbhattacharjee.qd.je') }}{{ canonical_path|default('') }}",
           "name": "{{ page_title|default(site_title_default) }}",
           "description": "{{ meta_description|default('Personal website of Antick Bhattacharjee.') }}",
           "mainEntity": {
-            "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+            "@id": "{{ canonical_host|default('https://www.antickbhattacharjee.qd.je') }}/#antick-bhattacharjee"
           }
         }
         {% block extra_schema %}{% endblock %}
@@ -115,13 +118,13 @@
 
             <nav class="primary-nav" id="primary-nav" aria-label="Primary Navigation">
                 <ul class="nav-list">
-                    <li class="nav-item"><a href="/" class="nav-link {% if canonical_path == '/' %}active{% endif %}">Home</a></li>
-                    <li class="nav-item"><a href="/about" class="nav-link {% if canonical_path == '/about' %}active{% endif %}">About</a></li>
-                    <li class="nav-item"><a href="/training" class="nav-link {% if canonical_path == '/training' %}active{% endif %}">Training</a></li>
-                    <li class="nav-item"><a href="/projects" class="nav-link {% if canonical_path == '/projects' %}active{% endif %}">Projects</a></li>
-                    <li class="nav-item"><a href="/gallery" class="nav-link {% if canonical_path.startswith('/gallery') %}active{% endif %}">Gallery</a></li>
-                    <li class="nav-item"><a href="/insights" class="nav-link {% if canonical_path == '/insights' %}active{% endif %}">Insights</a></li>
-                    <li class="nav-item"><a href="/contact" class="nav-link {% if canonical_path == '/contact' %}active{% endif %}">Contact</a></li>
+                    <li class="nav-item"><a href="/" class="nav-link {% if (canonical_path|default('')) == '/' %}active{% endif %}">Home</a></li>
+                    <li class="nav-item"><a href="/about" class="nav-link {% if (canonical_path|default('')) == '/about' %}active{% endif %}">About</a></li>
+                    <li class="nav-item"><a href="/training" class="nav-link {% if (canonical_path|default('')) == '/training' %}active{% endif %}">Training</a></li>
+                    <li class="nav-item"><a href="/projects" class="nav-link {% if (canonical_path|default('')) == '/projects' %}active{% endif %}">Projects</a></li>
+                    <li class="nav-item"><a href="/gallery" class="nav-link {% if (canonical_path|default('')).startswith('/gallery') %}active{% endif %}">Gallery</a></li>
+                    <li class="nav-item"><a href="/insights" class="nav-link {% if (canonical_path|default('')) == '/insights' %}active{% endif %}">Insights</a></li>
+                    <li class="nav-item"><a href="/contact" class="nav-link {% if (canonical_path|default('')) == '/contact' %}active{% endif %}">Contact</a></li>
                 </ul>
             </nav>
         </div>

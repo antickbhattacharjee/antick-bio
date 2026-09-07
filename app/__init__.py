@@ -43,14 +43,25 @@ def create_app(test_config=None):
             primary_image_alt = "Portrait of Antick Bhattacharjee"
 
         canonical_host = app.config.get("CANONICAL_HOST", "https://www.antickbhattacharjee.qd.je")
+        
+        # Safely resolve request path for global canonical & nav highlighting
+        try:
+            from flask import request
+            current_path = request.path if request else "/"
+        except Exception:
+            current_path = "/"
 
         return {
             "current_year": datetime.now().year,
             "canonical_host": canonical_host,
+            "canonical_path": current_path,
+            "canonical_url": f"{canonical_host}{current_path}",
             "author_name": "Antick Bhattacharjee",
             "brand_line": "Learn by building. Build with purpose.",
             "primary_descriptor": "Technology Educator • Python Developer • Corporate Trainer",
             "site_title_default": "Antick Bhattacharjee | Technology Educator, Python Developer & Corporate Trainer",
+            "page_title": "Antick Bhattacharjee | Technology Educator, Python Developer & Corporate Trainer",
+            "meta_description": "Personal website of Antick Bhattacharjee, technology educator, Python developer and corporate trainer focused on practical learning, automation, software development and artificial intelligence.",
             "primary_profile_image_url": f"{canonical_host}{primary_image_url}",
             "primary_profile_image_relative": primary_image_url,
             "primary_profile_image_alt": primary_image_alt,

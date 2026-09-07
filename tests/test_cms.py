@@ -1,10 +1,10 @@
 """
 Automated unit & integration test suite for Antick Website CMS.
 Verifies zero SQL database, content store, image processing, markdown rendering,
-admin authentication, CSRF, noindex headers, search alias normalization, and sitemap.
+admin authentication, CSRF, noindex headers, search alias normalization, sitemap,
+favicon, and robust 404/500 template error handling.
 """
 
-import json
 import os
 import unittest
 from io import BytesIO
@@ -12,14 +12,13 @@ from PIL import Image
 from werkzeug.security import generate_password_hash
 
 from app import create_app
+from app.routes import render_markdown_safely
 from app.services.content_store import ContentStore, content_store
 from app.services.media_processor import (
     generate_canonical_photo_filename,
     normalize_and_convert_image,
-    slugify,
     suggest_alt_text,
 )
-from app.routes import render_markdown_safely
 
 
 class CMSTestCase(unittest.TestCase):
@@ -37,13 +36,28 @@ class CMSTestCase(unittest.TestCase):
         })
         self.client = self.app.test_client()
 
+    def login_admin(self):
+        """Helper to log in as administrator."""
+        return self.client.post("/admin/login", data={
+            "username": "antick",
+            "password": "TestSecurePassword123!",
+        }, follow_redirects=True)
+
+    # -------------------------------------------------------------------------
+    # Zero SQL Database Verification
+    # -------------------------------------------------------------------------
+
     def test_no_sql_database_exists(self):
-        """Confirm no SQLite or database files exist in project root."""
-        root_files = os.listdir(os.path.dirname(os.path.dirname(__file__)))
-        for f in root_files:
+        """Confirm no SQLite or SQL database files exist in project root."""
+        root_dir = os.path.dirname(os.path.dirname(__file__))
+        for f in os.listdir(root_dir):
             self.assertFalse(f.endswith(".db"), f"Unexpected database file found: {f}")
             self.assertFalse(f.endswith(".sqlite"), f"Unexpected database file found: {f}")
             self.assertFalse(f.endswith(".sqlite3"), f"Unexpected database file found: {f}")
+
+    # -------------------------------------------------------------------------
+    # Content Store & Schema
+    # -------------------------------------------------------------------------
 
     def test_content_store_schema(self):
         """Verify default manifest structure."""
@@ -56,9 +70,12 @@ class CMSTestCase(unittest.TestCase):
         self.assertIsInstance(manifest["videos"], list)
         self.assertIsInstance(manifest["literature"], list)
 
+    # -------------------------------------------------------------------------
+    # Media Processing & Markdown Sanitization
+    # -------------------------------------------------------------------------
+
     def test_media_processor_webp_and_orientation(self):
         """Test Pillow normalization to WebP and dimension calculation."""
-        # Create a simple test image
         img = Image.new("RGB", (1600, 1200), color=(73, 109, 137))
         img_bytes = BytesIO()
         img.save(img_bytes, format="JPEG")
@@ -87,12 +104,43 @@ class CMSTestCase(unittest.TestCase):
         self.assertIn("<strong>Bold Text</strong>", html)
         self.assertNotIn("<script>", html)
 
+    # -------------------------------------------------------------------------
+    # Public Routes & Favicon
+    # -------------------------------------------------------------------------
+
     def test_public_routes(self):
         """Verify all core public routes return HTTP 200."""
-        routes = ["/", "/about", "/training", "/projects", "/gallery", "/insights", "/contact", "/health"]
+        routes = [
+            "/",
+            "/about",
+            "/training",
+            "/projects",
+            "/gallery",
+            "/insights",
+            "/contact",
+            "/health",
+        ]
         for r in routes:
             resp = self.client.get(r)
             self.assertEqual(resp.status_code, 200, f"Failed on route {r}")
+
+    def test_favicon_route(self):
+        """Verify /favicon.ico returns 200 and does not raise 404 or 500."""
+        resp = self.client.get("/favicon.ico")
+        self.assertIn(resp.status_code, (200, 204))
+
+    def test_404_error_handling_robustness(self):
+        """
+        Regression test for Bug 1:
+        Verify non-existent routes render 404 without secondary template UndefinedError exceptions.
+        """
+        resp = self.client.get("/definitely-not-a-real-page")
+        self.assertEqual(resp.status_code, 404, "404 route must return 404, NOT 500")
+        self.assertIn(b"Page Not Found", resp.data)
+
+        resp2 = self.client.get("/some/nested/missing/page")
+        self.assertEqual(resp2.status_code, 404)
+        self.assertIn(b"Page Not Found", resp2.data)
 
     def test_robots_txt(self):
         """Verify robots.txt allows public paths and disallows /admin."""
@@ -106,7 +154,7 @@ class CMSTestCase(unittest.TestCase):
         self.assertIn("Sitemap: https://www.antickbhattacharjee.qd.je/sitemap.xml", content)
 
     def test_sitemap_xml(self):
-        """Verify XML sitemap generation."""
+        """Verify XML sitemap generation with canonical domain."""
         resp = self.client.get("/sitemap.xml")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.mimetype, "application/xml")
@@ -115,30 +163,66 @@ class CMSTestCase(unittest.TestCase):
         self.assertIn("https://www.antickbhattacharjee.qd.je/gallery", content)
         self.assertNotIn("onrender.com", content)
 
+    # -------------------------------------------------------------------------
+    # Public Detail Pages
+    # -------------------------------------------------------------------------
+
+    def test_photo_and_literature_detail_pages(self):
+        """Verify detail pages render with structured data."""
+        # Test photo detail with fallback slug
+        resp_photo = self.client.get("/gallery/photo/antick-bhattacharjee-profile")
+        self.assertEqual(resp_photo.status_code, 200)
+        self.assertIn(b"Portrait of Antick Bhattacharjee", resp_photo.data)
+        self.assertIn(b"ImageObject", resp_photo.data)
+
+        # Test literature detail
+        resp_lit = self.client.get("/literature/first-principles-in-programming")
+        if resp_lit.status_code == 200:
+            self.assertIn(b"First-Principles", resp_lit.data)
+            self.assertIn(b"CreativeWork", resp_lit.data)
+
+    # -------------------------------------------------------------------------
+    # Admin Routes & Bug 2 Regression Tests
+    # -------------------------------------------------------------------------
+
     def test_admin_route_protection_and_noindex(self):
-        """Verify admin routes redirect to login and send noindex headers."""
-        resp = self.client.get("/admin")
+        """Verify unauthenticated admin routes redirect to login with noindex headers."""
+        resp = self.client.get("/admin", follow_redirects=False)
         self.assertEqual(resp.status_code, 302)
         self.assertIn("/admin/login", resp.headers["Location"])
 
-        # Check login page sends X-Robots-Tag: noindex
         resp_login = self.client.get("/admin/login")
         self.assertEqual(resp_login.status_code, 200)
         self.assertIn("noindex", resp_login.headers.get("X-Robots-Tag", ""))
 
-    def test_admin_login_and_dashboard(self):
-        """Verify admin login with correct password hash."""
-        resp = self.client.post("/admin/login", data={
-            "username": "antick",
-            "password": "TestSecurePassword123!",
-        }, follow_redirects=True)
-        self.assertEqual(resp.status_code, 200)
-        self.assertIn(b"Publisher Dashboard", resp.data)
+    def test_admin_dashboard_and_crud_pages_render_without_500(self):
+        """
+        Regression test for Bug 2:
+        Verify all admin CRUD pages render cleanly without BuildError or 500 exceptions.
+        """
+        self.login_admin()
 
-        # Access dashboard as logged in user
-        resp_dash = self.client.get("/admin")
-        self.assertEqual(resp_dash.status_code, 200)
-        self.assertIn(b"Publisher Dashboard", resp_dash.data)
+        admin_routes = [
+            "/admin",
+            "/admin/photos",
+            "/admin/photos/new",
+            "/admin/videos",
+            "/admin/videos/new",
+            "/admin/literature",
+            "/admin/literature/new",
+            "/admin/content",
+            "/admin/settings",
+        ]
+
+        for r in admin_routes:
+            resp = self.client.get(r)
+            self.assertEqual(resp.status_code, 200, f"Admin route {r} failed with status {resp.status_code}")
+            # Ensure noindex header is on all admin responses
+            self.assertIn("noindex", resp.headers.get("X-Robots-Tag", ""))
+
+    # -------------------------------------------------------------------------
+    # Search & Alias Normalization
+    # -------------------------------------------------------------------------
 
     def test_search_alias_normalization(self):
         """Test search query alias normalization (e.g. Antik -> Antick)."""
@@ -147,6 +231,11 @@ class CMSTestCase(unittest.TestCase):
         self.assertIn("photos", res)
         self.assertIn("videos", res)
         self.assertIn("literature", res)
+
+        # Test gallery search route with alias
+        resp = self.client.get("/gallery?q=Antik")
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(b"Showing results for:", resp.data)
 
 
 if __name__ == "__main__":

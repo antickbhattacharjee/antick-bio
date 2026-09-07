@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found (404) | Antick Bhattacharjee{% endblock %}
+{% block meta_title %}Page Not Found | Antick Bhattacharjee{% endblock %}
+{% block meta_desc %}The page you were looking for could not be found.{% endblock %}
+
+{% block content %}
+<section class="section error-page-section">
+    <div class="container text-center" style="padding: 5rem 1rem; max-width: 600px; margin: 0 auto;">
+        <span class="badge badge-draft" style="font-size: 1rem; padding: 0.4rem 1rem; margin-bottom: 1.5rem;">404 Not Found</span>
+        <h1 class="section-title" style="margin-bottom: 1rem;">Page Not Found</h1>
+        <p style="color: var(--color-text-secondary); margin-bottom: 2rem; font-size: 1.1rem; line-height: 1.6;">
+            The requested page or resource could not be found. It may have been moved, renamed, or is temporarily unavailable.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/" class="btn btn-primary">Return to Homepage</a>
+            <a href="/gallery" class="btn btn-secondary">Browse Gallery</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

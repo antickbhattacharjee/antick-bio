@@ -48,13 +48,73 @@ class ContentStore:
         os.environ["GOOGLE_DRIVE_MANIFEST_FILE_ID"] = file_id
 
     def get_default_manifest(self) -> Dict[str, Any]:
-        """Return the clean baseline manifest structure."""
+        """Return the clean baseline manifest structure seeded with initial portfolio items."""
+        from app.gallery_data import GALLERY_IMAGES
+
+        initial_photos = []
+        for i, img in enumerate(GALLERY_IMAGES, 1):
+            initial_photos.append({
+                "id": f"seed-photo-{i:03d}",
+                "drive_file_id": "",
+                "local_fallback_path": img.get("relative_path"),
+                "slug": img.get("slug"),
+                "filename": img.get("filename"),
+                "mime_type": "image/webp",
+                "width": img.get("width", 1200),
+                "height": img.get("height", 800),
+                "title": img.get("title"),
+                "description": img.get("description"),
+                "alt_text": img.get("alt"),
+                "caption": img.get("caption"),
+                "category": img.get("category", "General"),
+                "category_slug": img.get("category_slug", "general"),
+                "tags": [img.get("category_slug", "general")],
+                "date": img.get("date", "2026"),
+                "location": "West Bengal, India",
+                "featured": img.get("featured", True),
+                "primary_profile": img.get("is_primary_profile", False),
+                "published": True,
+                "created_at": "2026-01-01T00:00:00Z",
+                "updated_at": "2026-01-01T00:00:00Z",
+            })
+
         return {
             "version": 1,
             "identity": copy.deepcopy(CANONICAL_IDENTITY),
-            "photos": [],
+            "photos": initial_photos,
             "videos": [],
-            "literature": [],
+            "literature": [
+                {
+                    "id": "seed-lit-001",
+                    "drive_file_id": "",
+                    "slug": "first-principles-in-programming",
+                    "title": "The Value of First-Principles Learning in Programming",
+                    "content_type": "Essay",
+                    "short_description": "Why understanding foundational computing and architecture beats chasing fleeting framework trends every single time.",
+                    "body": "# The Value of First-Principles Learning in Programming\n\nBy **Antick Bhattacharjee**\n\nWhen exploring software engineering, frameworks and libraries come and go with incredible speed. However, core computing principles—data structures, networking fundamentals, memory management, and asynchronous flow—remain stable across decades.\n\nLearning from first principles enables an engineer to debug complex production issues, adapt rapidly to emerging paradigms, and architect dependable systems without cargo-culting.",
+                    "tags": ["Technology", "Education", "Engineering"],
+                    "featured": True,
+                    "published": True,
+                    "publication_date": "2026-01-15",
+                    "created_at": "2026-01-15T00:00:00Z",
+                    "updated_at": "2026-01-15T00:00:00Z",
+                },
+                {
+                    "id": "seed-lit-002",
+                    "drive_file_id": "",
+                    "slug": "pragmatic-automation-where-to-start",
+                    "title": "Pragmatic Automation: Where to Start in Your Workflow",
+                    "content_type": "Thought",
+                    "short_description": "A systematic approach to identifying repetitive tasks and building dependable scripts that save hours every week.",
+                    "body": "# Pragmatic Automation: Where to Start in Your Workflow\n\nBy **Antick Bhattacharjee**\n\nAutomation is most valuable when applied with precision to high-frequency, deterministic tasks. Before writing code, audit your daily operations:\n\n1. **Identify Repetitive Friction**: Look for spreadsheet copying, repetitive email reports, or manual data transforms.\n2. **Isolate Inputs and Outputs**: Build small, testable Python scripts that do one thing reliably.\n3. **Fail Safely**: Ensure automated jobs log errors gracefully without corrupting existing data.",
+                    "tags": ["Automation", "Python", "Productivity"],
+                    "featured": True,
+                    "published": True,
+                    "publication_date": "2026-02-01",
+                    "created_at": "2026-02-01T00:00:00Z",
+                    "updated_at": "2026-02-01T00:00:00Z",
+                },
+            ],
         }
 
     def invalidate_cache(self):
