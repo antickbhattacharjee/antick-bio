@@ -1,0 +1,88 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="admin-page-container">
+    <div class="page-title-row">
+        <div>
+            <h1>{{ title }}</h1>
+            <p class="subtitle">Writings are stored as clean UTF-8 Markdown in Google Drive / Literature and rendered server-side as semantic HTML for maximum SEO</p>
+        </div>
+        <div>
+            <a href="{{ url_for('admin.literature_list') }}" class="admin-btn admin-btn-outline">&larr; Back to Literature</a>
+        </div>
+    </div>
+
+    <div class="admin-form-card">
+        <form method="POST" class="admin-form">
+            {{ form.hidden_tag() }}
+
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="title">{{ form.title.label }} <span class="req">*</span></label>
+                    {{ form.title(class="form-control", placeholder="e.g. The Value of First-Principles Learning in Programming") }}
+                    {% for error in form.title.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group col-half">
+                    <label for="content_type">{{ form.content_type.label }} <span class="req">*</span></label>
+                    {{ form.content_type(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-full">
+                    <label for="short_description">{{ form.short_description.label }} <span class="req">*</span></label>
+                    {{ form.short_description(class="form-control", rows=2, placeholder="Brief summary used in gallery cards, search previews, and meta descriptions") }}
+                    {% for error in form.short_description.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-full">
+                    <label for="body">{{ form.body.label }} <span class="req">*</span></label>
+                    {{ form.body(class="form-control form-markdown-editor", rows=16, placeholder="Write your poem, essay, thought, or story using Markdown...") }}
+                    <small class="form-hint">Supports full Markdown syntax (# Headers, **bold**, *italics*, - lists, > blockquotes, ```code blocks```). Stored as a .md file in Google Drive.</small>
+                    {% for error in form.body.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="tags">{{ form.tags.label }}</label>
+                    {{ form.tags(class="form-control", placeholder="essay, philosophy, programming") }}
+                </div>
+
+                <div class="form-group col-half">
+                    <label for="publication_date">{{ form.publication_date.label }}</label>
+                    {{ form.publication_date(class="form-control", placeholder="YYYY-MM-DD") }}
+                </div>
+            </div>
+
+            <div class="form-checkbox-group">
+                <label class="checkbox-label">
+                    {{ form.featured() }}
+                    <span><strong>Featured</strong> (Show in homepage gallery preview)</span>
+                </label>
+
+                <label class="checkbox-label">
+                    {{ form.published() }}
+                    <span><strong>Published</strong> (Make visible on public website &amp; sitemap)</span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="admin-btn admin-btn-accent">{{ form.submit.label.text }}</button>
+                <a href="{{ url_for('admin.literature_list') }}" class="admin-btn admin-btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

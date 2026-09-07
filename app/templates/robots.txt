@@ -1,7 +1,14 @@
 User-agent: *
 Allow: /
-Allow: /static/
-Allow: /static/images/
 Allow: /gallery
+Allow: /media
+Allow: /literature
+Allow: /about
+Allow: /training
+Allow: /projects
+Allow: /insights
+Allow: /contact
+Allow: /static/
+Disallow: /admin
 
 Sitemap: {{ canonical_host }}/sitemap.xml

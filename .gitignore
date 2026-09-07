@@ -10,8 +10,17 @@ ENV/
 env.bak/
 venv.bak/
 
-# Environment Variables
+# Environment Variables & Secrets
 .env
+.env.*
+!.env.example
+token.json
+google_oauth_client.json
+client_secret*.json
+credentials*.json
+oauth*.json
+*.token.json
+render-env.txt
 
 # Distribution / Packaging
 build/

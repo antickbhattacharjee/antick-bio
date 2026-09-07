@@ -1,0 +1,101 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="admin-page-container">
+    <div class="page-title-row">
+        <div>
+            <h1>{{ title }}</h1>
+            <p class="subtitle">Videos are stored privately in Google Drive and streamed safely through Flask proxy</p>
+        </div>
+        <div>
+            <a href="{{ url_for('admin.videos_list') }}" class="admin-btn admin-btn-outline">&larr; Back to Videos</a>
+        </div>
+    </div>
+
+    <div class="admin-form-card">
+        <form method="POST" enctype="multipart/form-data" class="admin-form">
+            {{ form.hidden_tag() }}
+
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="video_file">{{ form.video_file.label }}</label>
+                    {{ form.video_file(class="form-control") }}
+                    <small class="form-hint">Accepted formats: MP4, WebM, MOV.</small>
+                    {% for error in form.video_file.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group col-half">
+                    <label for="poster_file">{{ form.poster_file.label }}</label>
+                    {{ form.poster_file(class="form-control") }}
+                    <small class="form-hint">Thumbnail poster displayed on player &amp; Open Graph.</small>
+                    {% for error in form.poster_file.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="title">{{ form.title.label }} <span class="req">*</span></label>
+                    {{ form.title(class="form-control", placeholder="e.g. Building Scalable Web Systems with Python") }}
+                    {% for error in form.title.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group col-half">
+                    <label for="category">{{ form.category.label }}</label>
+                    {{ form.category(class="form-control", placeholder="e.g. Presentations, Tutorials, Keynotes") }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-full">
+                    <label for="description">{{ form.description.label }}</label>
+                    {{ form.description(class="form-control", rows=3, placeholder="Comprehensive description for VideoObject schema & watch page") }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="tags">{{ form.tags.label }}</label>
+                    {{ form.tags(class="form-control", placeholder="python, web, architecture") }}
+                </div>
+
+                <div class="form-group col-half">
+                    <label for="date">{{ form.date.label }}</label>
+                    {{ form.date(class="form-control", placeholder="2026") }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-full">
+                    <label for="transcript">{{ form.transcript.label }}</label>
+                    {{ form.transcript(class="form-control", rows=4, placeholder="Optional text transcript for deep SEO indexing and accessibility") }}
+                </div>
+            </div>
+
+            <div class="form-checkbox-group">
+                <label class="checkbox-label">
+                    {{ form.featured() }}
+                    <span><strong>Featured</strong> (Show in homepage gallery preview)</span>
+                </label>
+
+                <label class="checkbox-label">
+                    {{ form.published() }}
+                    <span><strong>Published</strong> (Make visible on public website &amp; sitemap)</span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="admin-btn admin-btn-primary">{{ form.submit.label.text }}</button>
+                <a href="{{ url_for('admin.videos_list') }}" class="admin-btn admin-btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

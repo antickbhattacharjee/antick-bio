@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ video.title }} | Antick Bhattacharjee{% endblock %}
+{% block meta_title %}{{ video.title }} | Antick Bhattacharjee{% endblock %}
+{% block meta_desc %}{{ video.description|default('Video presentation by Antick Bhattacharjee') }}{% endblock %}
+
+{% block extra_schema %}
+,
+{
+  "@type": "VideoObject",
+  "@id": "{{ canonical_host }}/gallery/video/{{ video.slug }}#video",
+  "name": "{{ video.title }}",
+  "description": "{{ video.description|default(video.title) }}",
+  "thumbnailUrl": [
+    "{{ canonical_host }}/static/images/profile.jpg"
+  ],
+  "uploadDate": "{{ video.date|default('2026') }}",
+  "contentUrl": "{{ canonical_host }}/media/video/{{ video.slug }}",
+  "embedUrl": "{{ canonical_host }}/gallery/video/{{ video.slug }}",
+  "author": {
+    "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+  },
+  "publisher": {
+    "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+  }
+  {% if video.transcript %}
+  ,
+  "transcript": {{ video.transcript|tojson }}
+  {% endif %}
+}
+{% endblock %}
+
+{% block content %}
+<article class="video-detail-page section">
+    <div class="container">
+        <!-- Breadcrumbs -->
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <a href="/">Home</a> &rsaquo;
+            <a href="/gallery">Gallery</a> &rsaquo;
+            <span aria-current="page">{{ video.title }}</span>
+        </nav>
+
+        <div class="video-player-container">
+            <video controls preload="metadata" class="main-video-player" playsinline>
+                <source src="{{ url_for('main.stream_video', slug=video.slug) }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div class="video-info-section">
+            <div class="video-meta-bar">
+                <span class="badge badge-primary">{{ video.category }}</span>
+                <span class="video-date">Published: {{ video.date|default('2026') }}</span>
+                <span class="video-speaker">Speaker: <strong>Antick Bhattacharjee</strong></span>
+            </div>
+
+            <h1 class="video-main-title">{{ video.title }}</h1>
+
+            {% if video.description %}
+            <div class="video-description-box">
+                <h3>About this Presentation</h3>
+                <p>{{ video.description }}</p>
+            </div>
+            {% endif %}
+
+            {% if video.transcript %}
+            <div class="video-transcript-box">
+                <h3>Video Transcript &amp; Highlights</h3>
+                <div class="transcript-content">
+                    {{ video.transcript|nl2br }}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="video-action-bar">
+                <a href="/gallery?type=videos" class="btn btn-secondary">&larr; Back to Videos</a>
+                <a href="/contact" class="btn btn-primary">Inquire for Training Sessions</a>
+            </div>
+        </div>
+
+        <!-- Related Videos -->
+        {% if related_videos %}
+        <div class="related-media-section">
+            <h2 class="section-title">More Videos &amp; Talks</h2>
+            <div class="gallery-masonry-grid">
+                {% for r_vid in related_videos %}
+                <div class="gallery-card">
+                    <a href="{{ url_for('main.video_detail', slug=r_vid.slug) }}">
+                        <div class="video-card-thumb-wrapper">
+                            <div class="video-play-icon">&#9658;</div>
+                            <img src="/static/images/profile.jpg" alt="{{ r_vid.title }}" class="gallery-card-img" loading="lazy">
+                        </div>
+                    </a>
+                    <div class="gallery-card-content">
+                        <span class="gallery-card-cat">{{ r_vid.category }}</span>
+                        <h3 class="gallery-card-title">
+                            <a href="{{ url_for('main.video_detail', slug=r_vid.slug) }}">{{ r_vid.title }}</a>
+                        </h3>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

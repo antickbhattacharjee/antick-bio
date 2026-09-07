@@ -1,148 +1,146 @@
-# Antick Bhattacharjee - Personal Profile Website
+# Antick Bhattacharjee — Personal Website & Google Drive CMS
 
-A clean, modular, and responsive personal profile and portfolio website for **Antick Bhattacharjee** (Corporate Trainer, Technology Explorer, and Automation & Web Solution Builder), built using **Python, Flask, Jinja2, HTML5, and Vanilla CSS3**.
+A high-performance, modular personal publishing CMS and portfolio for **Antick Bhattacharjee** (Corporate Trainer, Technology Educator, Python Developer, and Solution Architect), built with **Python, Flask, Jinja2, Vanilla CSS3, and Google Drive API v3**.
 
----
-
-## 1. Project Purpose
-
-This repository represents **Phase 1** of a scalable personal platform. The goal is to provide a clean, professional, and accessible web foundation that:
-- Establishes a personal brand presence at `antickbhattacharjee.qd.je`.
-- Presents core focus areas: Corporate Training, Web Solutions, Workflow Automation, and Technology Exploration.
-- Provides direct contact links and monitoring endpoints.
-- Maintains a modular Flask application factory architecture designed to seamlessly scale into future features (blog, project showcase, dynamic contact forms, API integrations, Google Workspace automations, etc.).
+Production domain: **[https://www.antickbhattacharjee.qd.je](https://www.antickbhattacharjee.qd.je)**
 
 ---
 
-## 2. Project Structure
+## 1. Zero-Database Architecture Overview
 
-```text
-personal-profile/
-│
-├── run.py                 # Local development entry point
-├── wsgi.py                # Production WSGI entry point (for Gunicorn)
-├── requirements.txt       # Minimal Python dependencies
-├── .gitignore             # Python / OS ignore rules
-├── .env.example           # Environment variable template
-├── README.md              # Project documentation & setup instructions
-│
-└── app/
-    ├── __init__.py        # Flask application factory (create_app)
-    ├── routes.py          # Application routes and blueprint definitions
-    │
-    ├── templates/
-    │   ├── base.html      # Base HTML5 layout, metadata, navigation & footer
-    │   └── index.html     # Single-page sections (Hero, About, Work, Contact)
-    │
-    └── static/
-        ├── css/
-        │   └── style.css  # Custom CSS design system (tokens, layout, responsive)
-        │
-        ├── js/
-        │   └── main.js    # Minimal vanilla JavaScript (navigation, image fallback)
-        │
-        └── images/
-            └── .gitkeep   # Image assets directory (place profile.jpg here)
+This platform operates **without any SQL or NoSQL database services** (No PostgreSQL, MySQL, SQLite, MongoDB, Firebase, Supabase, or SQLAlchemy). Instead, persistent storage is powered entirely by private folders in **Google Drive**:
+
+```
+Browser / Search Crawler
+       |
+       v
+Flask Website (Gunicorn on Render)
+       |
+       +---- Public Website (/ , /gallery, /literature, /media, /about, /training, /projects)
+       |
+       +---- Admin CMS (/admin)
+                |
+                v  (Google Drive API v3 — Scope: drive.file)
+         Antick Website CMS/
+                |
+                +-- Photos/        (Optimized WebP images: antick-bhattacharjee-photo-XXX.webp)
+                +-- Videos/        (MP4 video presentations & posters)
+                +-- Literature/    (UTF-8 Markdown creative works: <slug>.md)
+                +-- Metadata/
+                       |
+                       +-- content-index.json  (Persistent manifest)
 ```
 
+- **Drive Isolation & Privacy**: Google Drive folders remain strictly private. Public visitors interact only with Flask proxy endpoints (`/media/photo/...`, `/media/video/...`).
+- **In-Memory TTL Caching**: `content-index.json` is cached with an in-memory TTL (60–300 seconds) to ensure sub-millisecond response times. Admin mutations immediately invalidate the cache.
+
 ---
 
-## 3. Getting Started & Local Development
+## 2. Google OAuth Testing Mode Warning
 
-### Prerequisites
-- Python 3.9+ installed on your system.
+> [!WARNING]
+> **Important Note on Google OAuth Refresh Token Longevity:**
+> In the Google Cloud Console, OAuth Consent Screens in **"Testing"** publishing status limit refresh tokens for External user types to **7 days of validity**.
+> 
+> For long-running production deployments on Render:
+> 1. In Google Cloud Console &rarr; *APIs &amp; Services* &rarr; *OAuth consent screen*, move your app status from **Testing** to **In Production** (or Internal for Workspace domains).
+> 2. Run `python scripts/google_drive_auth.py` once to generate a permanent refresh token.
+> 3. Update the `GOOGLE_REFRESH_TOKEN` in Render Environment Variables.
 
-### Step 1: Clone or Navigate to the Directory
-```bash
-cd d:/Projects/bio
-```
+---
 
-### Step 2: Create a Virtual Environment
-- **On Windows (PowerShell / Command Prompt):**
-  ```powershell
-  python -m venv venv
-  venv\Scripts\activate
-  ```
-- **On macOS / Linux:**
-  ```bash
-  python3 -m venv venv
-  source venv/bin/activate
-  ```
+## 3. Admin CMS Features
 
-### Step 3: Install Dependencies
+The CMS is accessible at `/admin` and provides single-owner management for:
+
+### 1. Photos (`/admin/photos`)
+- **Upload & Optimization**: Standard Pillow normalization (EXIF orientation auto-transpose, high-efficiency WebP conversion, non-stretching downscale).
+- **Collision-Safe Canonical Naming**: `antick-bhattacharjee-photo-001.webp`, `antick-bhattacharjee-photo-002.webp`, etc.
+- **Natural Alt-Text Suggestions**: Automatically suggested descriptive alt text without keyword stuffing.
+- **Primary Profile Image**: Designate one photo as the primary profile image to instantly update the homepage hero, `Person` Schema, `ProfilePage` Schema, and Open Graph metadata site-wide.
+
+### 2. Videos (`/admin/videos`)
+- **Storage & Watch Pages**: Videos are stored in `Google Drive / Videos` and presented on dedicated crawlable watch pages (`/gallery/video/<slug>`).
+- **Media Streaming**: Served through `/media/video/<slug>` supporting HTTP `Range` headers (`206 Partial Content`, `Accept-Ranges: bytes`).
+- **Structured Data**: Automatically emits `VideoObject` JSON-LD with transcripts when provided.
+
+### 3. Literature (`/admin/literature`)
+- **Creative Writing CMS**: Publish Essays, Thoughts, Poetry, Prose, Short Stories, and Articles.
+- **Persistent Storage**: Body text is stored as clean UTF-8 `.md` files in `Google Drive / Literature/<slug>.md`.
+- **Server-Side Rendering**: Server-renders Markdown into semantic HTML with `bleach` sanitization for maximum SEO indexing.
+- **Structured Data**: Emits `CreativeWork` JSON-LD schema.
+
+### 4. Manifest Inspector & Password Settings (`/admin/content`, `/admin/settings`)
+- Inspect raw `content-index.json` and download backups.
+- Securely update the administrator password with current password verification and Werkzeug password hashing.
+
+---
+
+## 4. Canonical Identity & SEO Strategy
+
+- **Canonical Identity**: `Antick Bhattacharjee`
+- **Search Aliases**: `Antik Bhattacharjee`, `Antique Bhattacharjee`, `Antick Bhattacharya`
+- **Alias Resolution**: Search queries matching common misspellings (e.g. "Antik") seamlessly return matching Antick content without spamming or keyword-stuffing metadata tags.
+- **Domain Enforcement**: Canonical URLs, Image Sitemaps, and Schema `@id` tags strictly use `https://www.antickbhattacharjee.qd.je` (never `onrender.com`).
+
+---
+
+## 5. Quick Start & Setup Guide
+
+### Step 1: Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 4: Configure Environment Variables (Optional)
-Copy `.env.example` to `.env`:
+### Step 2: Initialize Google Drive CMS
+Ensure your Google OAuth Desktop client JSON (`google_oauth_client.json` or `client_secret*.json`) is in the project root, then run:
+
 ```bash
-cp .env.example .env
+python scripts/google_drive_auth.py
 ```
 
-### Step 5: Run the Development Server
+This single command:
+1. Opens your browser for one-time Google OAuth authorization (scope: `https://www.googleapis.com/auth/drive.file`).
+2. Creates the private `Antick Website CMS` folders in your Google Drive.
+3. Initializes `Metadata/content-index.json`.
+4. Creates a local `.env` and exports Render environment values to `render-env.txt`.
+5. Displays your one-time temporary admin password.
+
+### Step 3: Run Development Server
 ```bash
 python run.py
 ```
-Open your browser and navigate to:
-```
-http://127.0.0.1:5000/
-```
+Visit `http://127.0.0.1:5000/` or `http://127.0.0.1:5000/admin`.
 
 ---
 
-## 4. Production Deployment
+## 6. Render Deployment
 
-The project includes a production WSGI entry point (`wsgi.py`) ready for WSGI HTTP servers like **Gunicorn**:
+The repository includes a [render.yaml](file:///d:/Projects/bio/render.yaml) blueprint:
 
+1. In Render Dashboard, create a new Web Service connected to this repository branch (`main`).
+2. Copy the values generated in local `render-env.txt` into **Render &rarr; Environment Variables**:
+   - `SECRET_KEY`
+   - `ADMIN_USERNAME`
+   - `ADMIN_PASSWORD_HASH`
+   - `GOOGLE_CLIENT_ID`
+   - `GOOGLE_CLIENT_SECRET`
+   - `GOOGLE_REFRESH_TOKEN`
+   - `GOOGLE_DRIVE_ROOT_FOLDER_ID`
+   - `GOOGLE_DRIVE_PHOTOS_FOLDER_ID`
+   - `GOOGLE_DRIVE_VIDEOS_FOLDER_ID`
+   - `GOOGLE_DRIVE_LITERATURE_FOLDER_ID`
+   - `GOOGLE_DRIVE_METADATA_FOLDER_ID`
+   - `GOOGLE_DRIVE_MANIFEST_FILE_ID`
+
+---
+
+## 7. Running Tests
+
+Run the automated test suite:
 ```bash
-gunicorn wsgi:app --bind 0.0.0.0:8000 --workers 4
+python -m unittest tests/test_cms.py
 ```
-
-### Health Check Endpoint
-A dedicated monitoring endpoint is available at `/health` for uptime checks, Docker healthchecks, and reverse proxies:
-```bash
-curl http://127.0.0.1:5000/health
-# Response: {"status": "ok"}
-```
-
----
-
-## 5. Customization & Personal Information
-
-### Modifying Personal Details
-All content is cleanly decoupled:
-1. **Profile Data & Contact Info**: Open [`app/routes.py`](file:///d:/Projects/bio/app/routes.py) to update:
-   - `email` (replace `YOUR_EMAIL` with your actual email)
-   - `linkedin` (replace `YOUR_LINKEDIN_URL` with your LinkedIn URL)
-   - `github` (replace `YOUR_GITHUB_URL` with your GitHub URL)
-   - `location` (currently set to `West Bengal, India`)
-2. **Text / Copy**: The hero headline, about paragraphs, and focus card descriptions can be updated in `app/routes.py` or directly customized in [`app/templates/index.html`](file:///d:/Projects/bio/app/templates/index.html).
-3. **Theme & Colors**: All visual styles use CSS Custom Properties in [`app/static/css/style.css`](file:///d:/Projects/bio/app/static/css/style.css) under `:root`.
-
----
-
-## 6. Profile Image
-
-- To add your photo, place your portrait image in:
-  ```
-  app/static/images/profile.jpg
-  ```
-- If no image is provided, the website automatically and elegantly falls back to a clean monogram avatar badge (`AB`) with zero visual glitch or broken image icons.
-
----
-
-## 7. Future Expansion Roadmap
-
-The architecture is built with Flask Blueprints and modular templates to easily accommodate future phases:
-
-- [ ] **Projects Portfolio**: Dedicated project cards with case studies and live demos.
-- [ ] **Training Catalog**: Course syllabi, workshop details, and scheduling inquiries.
-- [ ] **Interactive Contact Form**: Backend form processing, CSRF protection, and email notifications (e.g., SendGrid / SMTP).
-- [ ] **Technical Blog / Articles**: Markdown or database-backed technical writing.
-- [ ] **Google Workspace Integrations**: Automated booking and contact synchronization.
-- [ ] **AI Experiment Showcases**: Embedded interactive demonstrations and API utilities.
-- [ ] **Database & Admin Dashboard**: SQLite/PostgreSQL with Flask-SQLAlchemy for dynamic content updates.
 
 ---
 

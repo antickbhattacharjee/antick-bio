@@ -23,21 +23,18 @@
         <div class="hero-media">
             <div class="hero-image-card">
                 <div class="hero-image-wrapper">
-                    <!-- Real Professional Portrait Element for Image SEO -->
+                    <!-- Dynamic Primary Profile Image -->
                     <img 
-                        src="{{ url_for('static', filename=primary_image.relative_path) }}" 
-                        alt="{{ primary_image.alt }}" 
+                        src="{{ primary_profile_image_relative }}" 
+                        alt="{{ primary_profile_image_alt }}" 
                         width="800" 
                         height="800" 
                         class="hero-portrait-img"
                         id="hero-portrait-img"
                         fetchpriority="high"
                         decoding="async"
+                        onerror="this.src='/static/images/profile.jpg'"
                     >
-                    <div class="avatar-fallback" id="avatar-fallback" style="display: none;">
-                        <span class="avatar-monogram">AB</span>
-                        <span class="avatar-label">{{ profile.name }}</span>
-                    </div>
                 </div>
                 <div class="hero-badge">
                     <span class="status-indicator"></span>
@@ -199,90 +196,73 @@
     </div>
 </section>
 
-<!-- 6. Gallery Section (Crucial Image SEO & Brand Identity) -->
-<section class="section gallery-section" id="gallery">
+<!-- 6. Homepage Gallery Preview -->
+<section class="section gallery-section" id="gallery-preview">
     <div class="container">
         <div class="section-header">
-            <span class="section-subtitle">Visual Documentation</span>
-            <h2 class="section-title">Gallery: Antick Bhattacharjee in Training, Technology &amp; Projects</h2>
+            <span class="section-subtitle">Visual &amp; Creative Works</span>
+            <h2 class="section-title">Gallery Preview</h2>
             <div class="section-divider"></div>
         </div>
 
         <div class="gallery-context-box">
             <p class="gallery-intro-text">
-                Real photographs of Antick Bhattacharjee conducting corporate technical training, presenting workshops, and developing software solutions. Each photograph is documented with context and crawlable metadata.
+                Explore highlights from training sessions, technology projects, presentations, and written literature.
             </p>
         </div>
 
-        <!-- Crawlable HTML Image Grid -->
-        <div class="gallery-grid" id="gallery-grid">
-            {% for img in featured_images %}
-            <figure class="gallery-card" data-slug="{{ img.slug }}" data-full-src="{{ url_for('static', filename=img.relative_path) }}" data-title="{{ img.title }}" data-caption="{{ img.caption }}" data-detail-url="/gallery/{{ img.slug }}">
-                <div class="gallery-image-wrapper">
-                    <img 
-                        src="{{ url_for('static', filename=img.relative_path) }}" 
-                        alt="{{ img.alt }}" 
-                        width="{{ img.width }}" 
-                        height="{{ img.height }}" 
-                        loading="lazy" 
-                        decoding="async" 
-                        class="gallery-thumb"
-                    >
-                    <div class="gallery-overlay">
-                        <button type="button" class="gallery-zoom-btn" aria-label="Open larger view of {{ img.title }}">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                <line x1="11" y1="8" x2="11" y2="14"></line>
-                                <line x1="8" y1="11" x2="14" y2="11"></line>
-                            </svg>
-                            <span>Preview</span>
-                        </button>
-                    </div>
+        <!-- Dynamic Featured Grid -->
+        <div class="gallery-masonry-grid">
+            {% for photo in featured_photos %}
+            <figure class="gallery-card gallery-photo-card">
+                <div class="gallery-card-media">
+                    <a href="{{ url_for('main.photo_detail', slug=photo.slug) }}">
+                        <img 
+                            src="{{ url_for('main.serve_photo', filename=photo.filename) }}" 
+                            alt="{{ photo.alt_text|default('Photograph of Antick Bhattacharjee') }}" 
+                            width="{{ photo.width|default(800) }}" 
+                            height="{{ photo.height|default(800) }}" 
+                            loading="lazy" 
+                            decoding="async" 
+                            class="gallery-card-img"
+                            onerror="this.src='/static/images/profile.jpg'"
+                        >
+                    </a>
+                    <span class="card-type-badge badge-photo">Photo</span>
                 </div>
-                <figcaption class="gallery-caption-block">
-                    <span class="gallery-category-tag">{{ img.category }}</span>
-                    <h3 class="gallery-img-title">
-                        <a href="/gallery/{{ img.slug }}">{{ img.title }}</a>
+                <figcaption class="gallery-card-content">
+                    <span class="gallery-card-cat">{{ photo.category }}</span>
+                    <h3 class="gallery-card-title">
+                        <a href="{{ url_for('main.photo_detail', slug=photo.slug) }}">{{ photo.title }}</a>
                     </h3>
-                    <p class="gallery-caption-text">{{ img.caption }}</p>
                 </figcaption>
             </figure>
             {% endfor %}
-        </div>
 
-        <div class="section-footer-cta">
-            <a href="/gallery" class="btn btn-primary">Browse Complete Gallery &rarr;</a>
-        </div>
-    </div>
-</section>
-
-<!-- 7. Insights / Thoughts Preview Section -->
-<section class="section insights-section" id="insights">
-    <div class="container">
-        <div class="section-header">
-            <span class="section-subtitle">Perspectives</span>
-            <h2 class="section-title">Insights &amp; Thoughts</h2>
-            <div class="section-divider"></div>
-        </div>
-
-        <div class="insights-grid">
-            {% for item in profile.insights_preview %}
-            <article class="insight-card">
-                <span class="insight-meta">{{ item.date }} &bull; Technical Perspective</span>
-                <h3 class="insight-title">{{ item.title }}</h3>
-                <p class="insight-excerpt">{{ item.excerpt }}</p>
+            {% for lit in featured_literature %}
+            <article class="gallery-card gallery-literature-card">
+                <div class="gallery-card-content lit-card-content">
+                    <div class="lit-header-row">
+                        <span class="card-type-badge badge-literature">{{ lit.content_type }}</span>
+                        <span class="card-date">{{ lit.publication_date }}</span>
+                    </div>
+                    <h3 class="gallery-card-title">
+                        <a href="{{ url_for('main.literature_detail', slug=lit.slug) }}">{{ lit.title }}</a>
+                    </h3>
+                    <p class="gallery-card-excerpt">{{ lit.short_description }}</p>
+                    <a href="{{ url_for('main.literature_detail', slug=lit.slug) }}" class="card-detail-link">Read Piece &rarr;</a>
+                </div>
             </article>
             {% endfor %}
         </div>
 
-        <div class="section-footer-cta">
-            <a href="/insights" class="btn btn-outline">Read All Insights &rarr;</a>
+        <div class="section-footer-cta" style="margin-top:2.5rem;">
+            <a href="/gallery" class="btn btn-primary">View Gallery &rarr;</a>
         </div>
     </div>
 </section>
 
-<!-- 8. Contact Section -->
+<!-- 7. Contact Section -->
 <section class="section contact-section" id="contact">
     <div class="container">
         <div class="section-header">

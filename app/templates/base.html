@@ -21,16 +21,16 @@
     <meta property="og:url" content="{{ canonical_host }}{{ canonical_path|default('') }}">
     <meta property="og:title" content="{% block og_title %}{{ page_title|default(site_title_default) }}{% endblock %}">
     <meta property="og:description" content="{% block og_desc %}{{ meta_description|default('Personal website of Antick Bhattacharjee, technology educator, Python developer and corporate trainer.') }}{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ canonical_host }}/static/images/antick/profile/antick-bhattacharjee-profile.webp{% endblock %}">
-    <meta property="og:image:alt" content="{% block og_image_alt %}Portrait of Antick Bhattacharjee, technology educator, Python developer, and corporate trainer{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ primary_profile_image_url }}{% endblock %}">
+    <meta property="og:image:alt" content="{% block og_image_alt %}{{ primary_profile_image_alt }}{% endblock %}">
 
     <!-- Twitter / X Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="{{ canonical_host }}{{ canonical_path|default('') }}">
     <meta name="twitter:title" content="{% block twitter_title %}{{ page_title|default(site_title_default) }}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_desc %}{{ meta_description|default('Personal website of Antick Bhattacharjee, technology educator, Python developer and corporate trainer.') }}{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{{ canonical_host }}/static/images/antick/profile/antick-bhattacharjee-profile.webp{% endblock %}">
-    <meta name="twitter:image:alt" content="Portrait of Antick Bhattacharjee">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ primary_profile_image_url }}{% endblock %}">
+    <meta name="twitter:image:alt" content="{{ primary_profile_image_alt }}">
 
     <!-- Typography (Google Fonts: Inter & Outfit) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,7 +50,7 @@
           "@id": "{{ canonical_host }}/#antick-bhattacharjee",
           "name": "Antick Bhattacharjee",
           "url": "{{ canonical_host }}/",
-          "image": "{{ canonical_host }}/static/images/antick/profile/antick-bhattacharjee-profile.webp",
+          "image": "{{ primary_profile_image_url }}",
           "description": "Technology educator, Python developer, and corporate trainer specializing in hands-on learning, workflow automation, and practical software engineering.",
           "jobTitle": [
             "Technology Educator",

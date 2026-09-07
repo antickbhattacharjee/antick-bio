@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard{% endblock %} | Antick CMS</title>
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="admin-body">
+    {% if session.admin_logged_in %}
+    <header class="admin-header">
+        <div class="admin-header-container">
+            <div class="admin-brand">
+                <a href="{{ url_for('admin.dashboard') }}" class="admin-brand-link">
+                    <span class="brand-badge">CMS</span>
+                    <strong>Antick Bhattacharjee</strong>
+                </a>
+            </div>
+            
+            <nav class="admin-nav">
+                <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-item {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">Dashboard</a>
+                <a href="{{ url_for('admin.photos_list') }}" class="admin-nav-item {% if 'photo' in request.endpoint %}active{% endif %}">Photos</a>
+                <a href="{{ url_for('admin.videos_list') }}" class="admin-nav-item {% if 'video' in request.endpoint %}active{% endif %}">Videos</a>
+                <a href="{{ url_for('admin.literature_list') }}" class="admin-nav-item {% if 'literature' in request.endpoint %}active{% endif %}">Literature</a>
+                <a href="{{ url_for('admin.content_view') }}" class="admin-nav-item {% if request.endpoint == 'admin.content_view' %}active{% endif %}">Manifest</a>
+                <a href="{{ url_for('admin.settings') }}" class="admin-nav-item {% if request.endpoint == 'admin.settings' %}active{% endif %}">Settings</a>
+            </nav>
+            
+            <div class="admin-user-actions">
+                <a href="/" target="_blank" class="admin-btn admin-btn-outline" rel="noopener">View Public Site &nearr;</a>
+                <form action="{{ url_for('admin.logout') }}" method="POST" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="admin-btn admin-btn-danger">Logout</button>
+                </form>
+            </div>
+        </div>
+    </header>
+    {% endif %}
+
+    <main class="admin-main-container">
+        <!-- Flash Notifications -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="admin-flash-container">
+                    {% for category, message in messages %}
+                        <div class="admin-alert admin-alert-{{ category }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="admin-footer">
+        <p>Antick Website CMS &bull; Storage: Google Drive (drive.file scope) &bull; Zero SQL Database</p>
+    </footer>
+</body>
+</html>

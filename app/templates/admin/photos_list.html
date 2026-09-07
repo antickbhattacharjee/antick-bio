@@ -1,0 +1,78 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Photos{% endblock %}
+
+{% block content %}
+<div class="admin-page-container">
+    <div class="page-title-row">
+        <div>
+            <h1>Photo Gallery Management</h1>
+            <p class="subtitle">Upload, optimize, and manage photos persisted in Google Drive</p>
+        </div>
+        <div>
+            <a href="{{ url_for('admin.photo_new') }}" class="admin-btn admin-btn-primary">+ Upload New Photo</a>
+        </div>
+    </div>
+
+    {% if photos %}
+    <div class="admin-table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Preview</th>
+                    <th>Title &amp; Filename</th>
+                    <th>Category</th>
+                    <th>Dimensions</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for photo in photos %}
+                <tr>
+                    <td class="td-thumb">
+                        <img src="{{ url_for('main.serve_photo', filename=photo.filename) }}" alt="{{ photo.alt_text }}" class="table-thumb-img" loading="lazy" onerror="this.src='/static/images/profile.jpg'">
+                    </td>
+                    <td>
+                        <div class="table-title">
+                            <strong>{{ photo.title }}</strong>
+                            {% if photo.primary_profile %}
+                                <span class="badge badge-primary">Primary Hero Profile</span>
+                            {% endif %}
+                        </div>
+                        <div class="table-sub">{{ photo.filename }} &bull; Slug: <code>{{ photo.slug }}</code></div>
+                    </td>
+                    <td>
+                        <span class="badge badge-secondary">{{ photo.category }}</span>
+                    </td>
+                    <td>
+                        <span class="text-muted">{{ photo.width }} &times; {{ photo.height }}px</span>
+                    </td>
+                    <td>
+                        {% if photo.published %}
+                            <span class="badge badge-success">Published</span>
+                        {% else %}
+                            <span class="badge badge-draft">Draft</span>
+                        {% endif %}
+                    </td>
+                    <td class="td-actions">
+                        <a href="{{ url_for('main.image_detail', slug=photo.slug) }}" target="_blank" class="admin-btn-sm admin-btn-outline" rel="noopener">View &nearr;</a>
+                        <a href="{{ url_for('admin.photo_edit', photo_id=photo.id) }}" class="admin-btn-sm admin-btn-primary">Edit</a>
+                        <form action="{{ url_for('admin.photo_delete', photo_id=photo.id) }}" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this photo from Google Drive and manifest?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="admin-btn-sm admin-btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="admin-empty-card">
+        <p>No photos have been uploaded yet.</p>
+        <a href="{{ url_for('admin.photo_new') }}" class="admin-btn admin-btn-primary">Upload First Photo</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

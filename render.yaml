@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: antick-bio
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: FLASK_APP
+        value: run.py
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REFRESH_TOKEN
+        sync: false
+      - key: GOOGLE_DRIVE_ROOT_FOLDER_ID
+        sync: false
+      - key: GOOGLE_DRIVE_PHOTOS_FOLDER_ID
+        sync: false
+      - key: GOOGLE_DRIVE_VIDEOS_FOLDER_ID
+        sync: false
+      - key: GOOGLE_DRIVE_LITERATURE_FOLDER_ID
+        sync: false
+      - key: GOOGLE_DRIVE_METADATA_FOLDER_ID
+        sync: false
+      - key: GOOGLE_DRIVE_MANIFEST_FILE_ID
+        sync: false
+      - key: MAX_IMAGE_UPLOAD_MB
+        value: "15"
+      - key: MAX_VIDEO_UPLOAD_MB
+        value: "150"

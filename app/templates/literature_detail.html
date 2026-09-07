@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}{{ literature.title }} | Literature | Antick Bhattacharjee{% endblock %}
+{% block meta_title %}{{ literature.title }} | Literature by Antick Bhattacharjee{% endblock %}
+{% block meta_desc %}{{ literature.short_description }}{% endblock %}
+
+{% block extra_schema %}
+,
+{
+  "@type": "CreativeWork",
+  "@id": "{{ canonical_host }}/literature/{{ literature.slug }}#work",
+  "name": "{{ literature.title }}",
+  "headline": "{{ literature.title }}",
+  "description": "{{ literature.short_description }}",
+  "genre": "{{ literature.content_type }}",
+  "inLanguage": "en",
+  "datePublished": "{{ literature.publication_date }}",
+  "author": {
+    "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+  },
+  "creator": {
+    "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+  },
+  "publisher": {
+    "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ canonical_host }}/literature/{{ literature.slug }}"
+  }
+}
+{% endblock %}
+
+{% block content %}
+<article class="literature-page section">
+    <div class="container literature-container">
+        <!-- Breadcrumbs -->
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <a href="/">Home</a> &rsaquo;
+            <a href="/gallery?type=literature">Gallery</a> &rsaquo;
+            <span aria-current="page">{{ literature.title }}</span>
+        </nav>
+
+        <header class="literature-header">
+            <div class="literature-meta-row">
+                <span class="badge badge-type">{{ literature.content_type }}</span>
+                <time datetime="{{ literature.publication_date }}" class="literature-date">{{ literature.publication_date }}</time>
+                <span class="literature-author">By <strong>Antick Bhattacharjee</strong></span>
+            </div>
+
+            <h1 class="literature-title">{{ literature.title }}</h1>
+
+            {% if literature.short_description %}
+                <p class="literature-lead">{{ literature.short_description }}</p>
+            {% endif %}
+        </header>
+
+        <!-- Server-rendered semantic HTML body -->
+        <div class="literature-body-content">
+            {{ body_html|safe }}
+        </div>
+
+        {% if literature.tags %}
+        <div class="literature-tags-bar">
+            <span class="tags-label">Topics:</span>
+            {% for tag in literature.tags %}
+                <span class="spec-tag">{{ tag }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="literature-author-card">
+            <div class="author-avatar">
+                <img src="{{ primary_profile_image_relative }}" alt="Antick Bhattacharjee" class="author-img" loading="lazy" onerror="this.src='/static/images/profile.jpg'">
+            </div>
+            <div class="author-bio">
+                <h4>Written by Antick Bhattacharjee</h4>
+                <p>Technology Educator, Python Developer, and Corporate Trainer. Exploring computing from first principles and sharing pragmatic perspectives on technology and craft.</p>
+                <div class="author-links">
+                    <a href="/about">Learn More &rarr;</a>
+                    <a href="/contact">Get in Touch &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Literature -->
+        {% if related_literature %}
+        <div class="related-literature-section">
+            <h3 class="section-title">More Written Works</h3>
+            <div class="gallery-masonry-grid">
+                {% for r_lit in related_literature %}
+                <div class="gallery-card gallery-literature-card">
+                    <div class="gallery-card-content lit-card-content">
+                        <div class="lit-header-row">
+                            <span class="card-type-badge badge-literature">{{ r_lit.content_type }}</span>
+                            <span class="card-date">{{ r_lit.publication_date }}</span>
+                        </div>
+                        <h4 class="gallery-card-title">
+                            <a href="{{ url_for('main.literature_detail', slug=r_lit.slug) }}">{{ r_lit.title }}</a>
+                        </h4>
+                        <p class="gallery-card-excerpt">{{ r_lit.short_description }}</p>
+                        <a href="{{ url_for('main.literature_detail', slug=r_lit.slug) }}" class="card-detail-link">Read Piece &rarr;</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

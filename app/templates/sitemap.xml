@@ -6,13 +6,15 @@
         <loc>{{ canonical_host }}{{ page.path }}</loc>
         <changefreq>{{ page.changefreq }}</changefreq>
         <priority>{{ page.priority }}</priority>
-        {% for img in page.images %}
-        <image:image>
-            <image:loc>{{ canonical_host }}/static/{{ img.relative_path }}</image:loc>
-            <image:title>{{ img.title }}</image:title>
-            <image:caption>{{ img.caption }}</image:caption>
-        </image:image>
-        {% endfor %}
+        {% if page.photos %}
+            {% for photo in page.photos %}
+            <image:image>
+                <image:loc>{{ canonical_host }}/media/photo/{{ photo.filename }}</image:loc>
+                <image:title>{{ photo.title }}</image:title>
+                <image:caption>{{ photo.caption|default(photo.title) }}</image:caption>
+            </image:image>
+            {% endfor %}
+        {% endif %}
     </url>
 {% endfor %}
 </urlset>

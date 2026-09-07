@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}{{ photo.title }} | Antick Bhattacharjee{% endblock %}
+{% block meta_title %}{{ photo.title }} | Antick Bhattacharjee{% endblock %}
+{% block meta_desc %}{{ photo.caption|default(photo.description)|default('Photograph of Antick Bhattacharjee') }}{% endblock %}
+
+{% block og_image %}{{ canonical_host }}/media/photo/{{ photo.filename }}{% endblock %}
+{% block og_image_alt %}{{ photo.alt_text|default('Portrait of Antick Bhattacharjee') }}{% endblock %}
+{% block twitter_image %}{{ canonical_host }}/media/photo/{{ photo.filename }}{% endblock %}
+
+{% block extra_schema %}
+,
+{
+  "@type": "ImageObject",
+  "@id": "{{ canonical_host }}/gallery/photo/{{ photo.slug }}#primaryimage",
+  "url": "{{ canonical_host }}/media/photo/{{ photo.filename }}",
+  "contentUrl": "{{ canonical_host }}/media/photo/{{ photo.filename }}",
+  "name": "{{ photo.title }}",
+  "description": "{{ photo.description|default(photo.caption) }}",
+  "caption": "{{ photo.caption|default(photo.title) }}",
+  "author": {
+    "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+  },
+  "creator": {
+    "@id": "{{ canonical_host }}/#antick-bhattacharjee"
+  },
+  "width": "{{ photo.width|default(1200) }}",
+  "height": "{{ photo.height|default(800) }}",
+  "datePublished": "{{ photo.date|default('2026') }}",
+  "contentLocation": {
+    "@type": "Place",
+    "name": "{{ photo.location|default('West Bengal, India') }}"
+  }
+}
+{% endblock %}
+
+{% block content %}
+<article class="photo-detail-page section">
+    <div class="container">
+        <!-- Breadcrumb navigation -->
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <a href="/">Home</a> &rsaquo;
+            <a href="/gallery">Gallery</a> &rsaquo;
+            <span aria-current="page">{{ photo.title }}</span>
+        </nav>
+
+        <div class="photo-detail-layout">
+            <!-- Media Container -->
+            <div class="photo-media-column">
+                <div class="photo-display-card">
+                    <img src="{{ url_for('main.serve_photo', filename=photo.filename) }}"
+                         alt="{{ photo.alt_text|default('Portrait of Antick Bhattacharjee') }}"
+                         width="{{ photo.width|default(1200) }}"
+                         height="{{ photo.height|default(800) }}"
+                         fetchpriority="high"
+                         decoding="async"
+                         class="photo-main-img"
+                         onerror="this.src='/static/images/profile.jpg'">
+                </div>
+                {% if photo.caption %}
+                    <p class="photo-caption-text"><em>{{ photo.caption }}</em></p>
+                {% endif %}
+            </div>
+
+            <!-- Metadata Sidebar -->
+            <div class="photo-info-column">
+                <header class="photo-info-header">
+                    <span class="badge badge-primary">{{ photo.category }}</span>
+                    <h1 class="photo-main-title">{{ photo.title }}</h1>
+                </header>
+
+                {% if photo.description %}
+                <div class="photo-description-block">
+                    <h3>Context &amp; Background</h3>
+                    <p>{{ photo.description }}</p>
+                </div>
+                {% endif %}
+
+                <div class="photo-specs-card">
+                    <dl class="specs-list">
+                        <div class="spec-row">
+                            <dt>Subject:</dt>
+                            <dd><strong>Antick Bhattacharjee</strong></dd>
+                        </div>
+                        <div class="spec-row">
+                            <dt>Category:</dt>
+                            <dd>{{ photo.category }}</dd>
+                        </div>
+                        <div class="spec-row">
+                            <dt>Date:</dt>
+                            <dd>{{ photo.date|default('2026') }}</dd>
+                        </div>
+                        <div class="spec-row">
+                            <dt>Location:</dt>
+                            <dd>{{ photo.location|default('West Bengal, India') }}</dd>
+                        </div>
+                        {% if photo.tags %}
+                        <div class="spec-row">
+                            <dt>Tags:</dt>
+                            <dd>
+                                {% for tag in photo.tags %}
+                                    <span class="spec-tag">{{ tag }}</span>
+                                {% endfor %}
+                            </dd>
+                        </div>
+                        {% endif %}
+                    </dl>
+                </div>
+
+                <div class="photo-action-bar">
+                    <a href="/gallery" class="btn btn-secondary">&larr; Back to Gallery</a>
+                    <a href="/contact" class="btn btn-primary">Connect with Antick</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Photos -->
+        {% if related_photos %}
+        <div class="related-media-section">
+            <h2 class="section-title">Related Photographs</h2>
+            <div class="gallery-masonry-grid">
+                {% for r_photo in related_photos %}
+                <div class="gallery-card">
+                    <a href="{{ url_for('main.photo_detail', slug=r_photo.slug) }}">
+                        <img src="{{ url_for('main.serve_photo', filename=r_photo.filename) }}"
+                             alt="{{ r_photo.alt_text|default('Photograph of Antick Bhattacharjee') }}"
+                             loading="lazy"
+                             decoding="async"
+                             class="gallery-card-img"
+                             onerror="this.src='/static/images/profile.jpg'">
+                    </a>
+                    <div class="gallery-card-content">
+                        <span class="gallery-card-cat">{{ r_photo.category }}</span>
+                        <h3 class="gallery-card-title">
+                            <a href="{{ url_for('main.photo_detail', slug=r_photo.slug) }}">{{ r_photo.title }}</a>
+                        </h3>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

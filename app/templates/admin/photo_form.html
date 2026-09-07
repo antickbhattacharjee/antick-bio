@@ -1,0 +1,124 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="admin-page-container">
+    <div class="page-title-row">
+        <div>
+            <h1>{{ title }}</h1>
+            <p class="subtitle">Automatic EXIF orientation normalization, WebP optimization, and collision-safe naming</p>
+        </div>
+        <div>
+            <a href="{{ url_for('admin.photos_list') }}" class="admin-btn admin-btn-outline">&larr; Back to Photos</a>
+        </div>
+    </div>
+
+    <div class="admin-form-card">
+        <form method="POST" enctype="multipart/form-data" class="admin-form">
+            {{ form.hidden_tag() }}
+
+            <div class="form-row">
+                <div class="form-group col-full">
+                    <label for="photo_file">{{ form.photo_file.label }} {% if not photo %}<span class="req">*</span>{% endif %}</label>
+                    {{ form.photo_file(class="form-control") }}
+                    <small class="form-hint">Accepted formats: JPEG, PNG, WebP. Automatically converted to high-quality responsive WebP in Google Drive.</small>
+                    {% for error in form.photo_file.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if photo %}
+            <div class="form-row">
+                <div class="form-group col-full current-media-preview">
+                    <label>Current Photo:</label>
+                    <div class="preview-box">
+                        <img src="{{ url_for('main.serve_photo', filename=photo.filename) }}" alt="{{ photo.alt_text }}" class="form-preview-img" onerror="this.src='/static/images/profile.jpg'">
+                        <div class="preview-details">
+                            <p><strong>Filename:</strong> {{ photo.filename }}</p>
+                            <p><strong>Dimensions:</strong> {{ photo.width }} &times; {{ photo.height }}px</p>
+                            <p><strong>Slug:</strong> <code>{{ photo.slug }}</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="title">{{ form.title.label }} <span class="req">*</span></label>
+                    {{ form.title(class="form-control", placeholder="e.g. Hands-on Python Training Workshop") }}
+                    {% for error in form.title.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group col-half">
+                    <label for="category">{{ form.category.label }}</label>
+                    {{ form.category(class="form-control", placeholder="e.g. Training Sessions, Presentations, Workshops") }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-full">
+                    <label for="alt_text">{{ form.alt_text.label }}</label>
+                    {{ form.alt_text(class="form-control", placeholder="e.g. Antick Bhattacharjee guiding participants during a Python training workshop") }}
+                    <small class="form-hint">Natural description for accessibility and image search. Avoid repetitive keyword stuffing.</small>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="caption">{{ form.caption.label }}</label>
+                    {{ form.caption(class="form-control", rows=3, placeholder="Short caption shown in gallery lightbox") }}
+                </div>
+
+                <div class="form-group col-half">
+                    <label for="description">{{ form.description.label }}</label>
+                    {{ form.description(class="form-control", rows=3, placeholder="Comprehensive description for detail page SEO") }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-third">
+                    <label for="tags">{{ form.tags.label }}</label>
+                    {{ form.tags(class="form-control", placeholder="python, training, corporate") }}
+                </div>
+
+                <div class="form-group col-third">
+                    <label for="date">{{ form.date.label }}</label>
+                    {{ form.date(class="form-control", placeholder="2026") }}
+                </div>
+
+                <div class="form-group col-third">
+                    <label for="location">{{ form.location.label }}</label>
+                    {{ form.location(class="form-control", placeholder="West Bengal, India") }}
+                </div>
+            </div>
+
+            <div class="form-checkbox-group">
+                <label class="checkbox-label">
+                    {{ form.primary_profile() }}
+                    <span><strong>Set as Primary Profile Image</strong> (Automatically updates homepage hero, Person Schema, ProfilePage Schema, and Open Graph fallback)</span>
+                </label>
+
+                <label class="checkbox-label">
+                    {{ form.featured() }}
+                    <span><strong>Featured</strong> (Show in homepage gallery preview)</span>
+                </label>
+
+                <label class="checkbox-label">
+                    {{ form.published() }}
+                    <span><strong>Published</strong> (Make visible on public website &amp; sitemap)</span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="admin-btn admin-btn-primary">{{ form.submit.label.text }}</button>
+                <a href="{{ url_for('admin.photos_list') }}" class="admin-btn admin-btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

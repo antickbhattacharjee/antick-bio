@@ -1,0 +1,124 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="page-title-row">
+        <div>
+            <h1>Publisher Dashboard</h1>
+            <p class="subtitle">Overview of your published works, photos, and video media</p>
+        </div>
+        <div class="action-buttons">
+            <a href="{{ url_for('admin.photo_new') }}" class="admin-btn admin-btn-primary">+ Upload Photo</a>
+            <a href="{{ url_for('admin.video_new') }}" class="admin-btn admin-btn-primary">+ Add Video</a>
+            <a href="{{ url_for('admin.literature_new') }}" class="admin-btn admin-btn-accent">+ Write Literature</a>
+        </div>
+    </div>
+
+    <!-- Status Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">📷</div>
+            <div class="stat-content">
+                <span class="stat-label">Photos</span>
+                <span class="stat-value">{{ stats.published_photos }} <small class="text-muted">/ {{ stats.total_photos }} total</small></span>
+                <a href="{{ url_for('admin.photos_list') }}" class="stat-link">Manage Photos &rarr;</a>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🎥</div>
+            <div class="stat-content">
+                <span class="stat-label">Videos</span>
+                <span class="stat-value">{{ stats.published_videos }} <small class="text-muted">/ {{ stats.total_videos }} total</small></span>
+                <a href="{{ url_for('admin.videos_list') }}" class="stat-link">Manage Videos &rarr;</a>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">✍️</div>
+            <div class="stat-content">
+                <span class="stat-label">Literature</span>
+                <span class="stat-value">{{ stats.published_literature }} <small class="text-muted">/ {{ stats.total_literature }} total</small></span>
+                <a href="{{ url_for('admin.literature_list') }}" class="stat-link">Manage Literature &rarr;</a>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">☁️</div>
+            <div class="stat-content">
+                <span class="stat-label">Storage Backend</span>
+                <span class="stat-value">
+                    {% if stats.drive_configured %}
+                        <span class="badge badge-success">Google Drive Connected</span>
+                    {% else %}
+                        <span class="badge badge-warning">Local Fallback</span>
+                    {% endif %}
+                </span>
+                <span class="stat-desc">Zero SQL &bull; JSON Manifest in Drive</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Content Grids -->
+    <div class="dashboard-sections-grid">
+        <!-- Recent Photos -->
+        <div class="dashboard-section-card">
+            <div class="section-card-header">
+                <h3>Recent Photos</h3>
+                <a href="{{ url_for('admin.photos_list') }}">View all</a>
+            </div>
+            <div class="section-card-body">
+                {% if recent_photos %}
+                    <ul class="admin-item-list">
+                        {% for photo in recent_photos %}
+                            <li class="admin-item-row">
+                                <div class="item-meta">
+                                    <strong>{{ photo.title }}</strong>
+                                    <span class="item-sub">{{ photo.category }} &bull; {{ photo.filename }}</span>
+                                </div>
+                                <div class="item-tags">
+                                    {% if photo.primary_profile %}<span class="badge badge-primary">Hero Profile</span>{% endif %}
+                                    {% if photo.published %}<span class="badge badge-success">Live</span>{% else %}<span class="badge badge-draft">Draft</span>{% endif %}
+                                    <a href="{{ url_for('admin.photo_edit', photo_id=photo.id) }}" class="admin-btn-sm admin-btn-outline">Edit</a>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="empty-text">No photos uploaded yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Literature -->
+        <div class="dashboard-section-card">
+            <div class="section-card-header">
+                <h3>Recent Literature</h3>
+                <a href="{{ url_for('admin.literature_list') }}">View all</a>
+            </div>
+            <div class="section-card-body">
+                {% if recent_literature %}
+                    <ul class="admin-item-list">
+                        {% for lit in recent_literature %}
+                            <li class="admin-item-row">
+                                <div class="item-meta">
+                                    <strong>{{ lit.title }}</strong>
+                                    <span class="item-sub"><span class="badge badge-type">{{ lit.content_type }}</span> &bull; {{ lit.publication_date }}</span>
+                                </div>
+                                <div class="item-tags">
+                                    {% if lit.published %}<span class="badge badge-success">Live</span>{% else %}<span class="badge badge-draft">Draft</span>{% endif %}
+                                    <a href="{{ url_for('admin.literature_edit', lit_id=lit.id) }}" class="admin-btn-sm admin-btn-outline">Edit</a>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="empty-text">No literature pieces created yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

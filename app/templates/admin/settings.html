@@ -1,0 +1,77 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="admin-page-container">
+    <div class="page-title-row">
+        <div>
+            <h1>Admin Settings &amp; Security</h1>
+            <p class="subtitle">Manage credentials and verify environment configuration</p>
+        </div>
+    </div>
+
+    {% if new_hash %}
+    <div class="admin-alert admin-alert-warning">
+        <h4 style="margin-top:0;">⚡ Action Required for Render Production Deployment</h4>
+        <p>Your local password hash has been updated. If your site is running in production on Render, you must also copy this new hash to your <strong>Render Dashboard &rarr; Environment &rarr; <code>ADMIN_PASSWORD_HASH</code></strong>:</p>
+        <div class="code-copy-box">
+            <code>{{ new_hash }}</code>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="settings-grid">
+        <!-- Change Password Card -->
+        <div class="admin-form-card">
+            <h3>Change Admin Password</h3>
+            <p class="form-hint" style="margin-bottom:1.5rem;">Username: <strong>{{ admin_user }}</strong></p>
+
+            <form method="POST" class="admin-form">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="current_password">{{ form.current_password.label }} <span class="req">*</span></label>
+                    {{ form.current_password(class="form-control", placeholder="Enter your current password") }}
+                    {% for error in form.current_password.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="new_password">{{ form.new_password.label }} <span class="req">*</span></label>
+                    {{ form.new_password(class="form-control", placeholder="Enter new strong password (min 10 characters)") }}
+                    {% for error in form.new_password.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">{{ form.confirm_password.label }} <span class="req">*</span></label>
+                    {{ form.confirm_password(class="form-control", placeholder="Confirm new password") }}
+                    {% for error in form.confirm_password.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="admin-btn admin-btn-primary">{{ form.submit.label.text }}</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- System Status Card -->
+        <div class="admin-form-card">
+            <h3>System &amp; SEO Architecture</h3>
+            <ul class="admin-feature-list">
+                <li><strong>Database Architecture:</strong> Zero SQL / NoSQL (Google Drive storage)</li>
+                <li><strong>Canonical Domain:</strong> <code>https://www.antickbhattacharjee.qd.je</code></li>
+                <li><strong>OAuth Scope:</strong> <code>https://www.googleapis.com/auth/drive.file</code></li>
+                <li><strong>Search Aliases:</strong> Antik Bhattacharjee, Antique Bhattacharjee, Antick Bhattacharya</li>
+                <li><strong>Image Processing:</strong> Pillow EXIF transpose + WebP compression</li>
+                <li><strong>Security:</strong> Werkzeug Password Hashing + CSRF Protection + Session Cookies</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

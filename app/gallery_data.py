@@ -129,17 +129,30 @@ GALLERY_IMAGES = [
 
 
 def get_all_images():
-    """Return all gallery images."""
+    """Return all published photos from content store (falling back to baseline if empty)."""
+    from app.services.content_store import content_store
+    photos = content_store.get_photos(published_only=True)
+    if photos:
+        return photos
     return GALLERY_IMAGES
 
 
 def get_featured_images():
-    """Return images marked as featured for homepage display."""
+    """Return featured photos."""
+    from app.services.content_store import content_store
+    photos = content_store.get_photos(published_only=True)
+    featured = [p for p in photos if p.get("featured")]
+    if featured:
+        return featured
     return [img for img in GALLERY_IMAGES if img.get("featured")]
 
 
 def get_image_by_slug(slug):
-    """Lookup a gallery image record by its unique URL slug."""
+    """Lookup a photo record by its slug."""
+    from app.services.content_store import content_store
+    photo = content_store.get_photo_by_slug(slug)
+    if photo:
+        return photo
     for img in GALLERY_IMAGES:
         if img.get("slug") == slug:
             return img
@@ -148,6 +161,10 @@ def get_image_by_slug(slug):
 
 def get_primary_profile_image():
     """Return the primary identity portrait image record."""
+    from app.services.content_store import content_store
+    photo = content_store.get_primary_profile_photo()
+    if photo:
+        return photo
     for img in GALLERY_IMAGES:
         if img.get("is_primary_profile"):
             return img
@@ -156,8 +173,9 @@ def get_primary_profile_image():
 
 def get_categories():
     """Return unique categories with count and metadata."""
+    images = get_all_images()
     categories = {}
-    for img in GALLERY_IMAGES:
+    for img in images:
         cat_name = img.get("category", "General")
         cat_slug = img.get("category_slug", "general")
         if cat_slug not in categories:
