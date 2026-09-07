@@ -252,6 +252,36 @@ class CMSTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertIn(b"Showing results for:", resp.data)
 
+    # -------------------------------------------------------------------------
+    # Public Routes & Contact Page
+    # -------------------------------------------------------------------------
+
+    def test_public_routes_render_cleanly(self):
+        """Verify all core public routes render successfully with status 200."""
+        routes = [
+            "/",
+            "/about",
+            "/training",
+            "/projects",
+            "/gallery",
+            "/insights",
+            "/contact",
+        ]
+        for r in routes:
+            resp = self.client.get(r)
+            self.assertEqual(resp.status_code, 200, f"Public route {r} failed with status {resp.status_code}")
+
+    def test_contact_page_structure(self):
+        """Verify contact page contains all verified social channels."""
+        resp = self.client.get("/contact")
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(b"LinkedIn", resp.data)
+        self.assertIn(b"GitHub", resp.data)
+        self.assertIn(b"Instagram", resp.data)
+        self.assertIn(b"Facebook", resp.data)
+        self.assertIn(b"contact-grid", resp.data)
+        self.assertIn(b"contact-item", resp.data)
+
 
 if __name__ == "__main__":
     unittest.main()
